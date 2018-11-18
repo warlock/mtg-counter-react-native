@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Dimensions, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Dimensions, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
 
 class Counter extends Component {
     constructor () {
@@ -32,11 +32,20 @@ class Counter extends Component {
 
     }
 
+    componentWillReceiveProps (newprops) {
+      if (newprops.reset) {
+        this.setState({
+          life: 20,
+          poison: 0
+        })
+      }
+    }
+
     render () {
         const { width } = Dimensions.get('screen')
 
         return (
-          <View style={{ alignItems: 'center', width: (width/2) }}>
+          <ImageBackground source={this.props.img} style={{ alignItems: 'center', width: (width/2), backgroundColor: 'red', opacity: (this.state.life < 1 || this.state.poison > 9 ? 0.4:1) }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: (width/2)}}>
               <TouchableOpacity onPress={() => { this.upLife(1) }}>
                 <Text style={[styles.textsmall, { color: 'lightgreen' }]}>+1 life</Text>
@@ -50,20 +59,28 @@ class Counter extends Component {
             </View>
             <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', width: (width/2), height: '80%' }}>
               <TouchableOpacity onPress={() => { this.downLife() }}>
-                <Text style={[styles.text, { color: 'lightgreen' }]}>{this.state.life}</Text>
+                <View>
+                  <Text style={[styles.text, { color: 'lightgreen' }]}>{this.state.life}</Text>
+                </View>
               </TouchableOpacity>
-              <TouchableOpacity  onPress={() => { this.poison(true) }}>
-                <Text style={[styles.text, { color: 'magenta' }]}>{this.state.poison}</Text>
+              <TouchableOpacity onPress={() => { this.poison(true) }}>
+                <View>
+                  <Text style={[styles.text, { color: 'magenta' }]}>{this.state.poison}</Text>
+                </View>
               </TouchableOpacity>
             </View>
-          </View>
+          </ImageBackground>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    text: { fontSize: 50 },
-    textsmall: { fontSize: 20 }
+    text: { fontSize: 80 },
+    textsmall: { fontSize: 25 },
+    lines: {
+      borderWidth: 3,
+      borderColor: 'red'
+    }
   })
   
 
