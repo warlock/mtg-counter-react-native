@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Alert, View, Dimensions, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, Alert, View, Dimensions, Text, TouchableOpacity, Image } from 'react-native'
 import Counter from './components/Counter'
 const { height, width } = Dimensions.get('screen')
 import { DangerZone } from 'expo'
@@ -10,7 +10,10 @@ export default class App extends Component {
   constructor () {
     super()
     this.state = {
-      time: Date.now()
+      time: Date.now(),
+      restart: 'Restart',
+      dice: 'Throw a dice',
+      language: 'en'
     }
     this.resetGame.bind(this)
     this.throwDice.bind(this)
@@ -18,12 +21,24 @@ export default class App extends Component {
   }
 
   async componentWillMount () {
-    if (Localization.locale === 'ca-ES') {
-      console.log('catala')
+    if (Localization.locale === 'catala') {
+      this.setState({
+        language: 'cat',
+        restart: 'Reiniciar joc',
+        dice: 'Llençar dau'
+      })
     } else if (Localization.locale.includes('es-')) {
-      console.log('castella')
+      this.setState({
+        language: 'es',
+        restart: 'Reiniciar juego',
+        dice: 'Lanzar dado'
+      })
     } else {
-      console.log('angles')
+      this.setState({
+        language: 'en',
+        restart: 'Restart game',
+        dice: 'Throw a dice'
+      })
     }
   }
 
@@ -36,7 +51,7 @@ export default class App extends Component {
   }
 
   naips () {
-    alert('Visita naips!')
+    window.open('http://www.naipsbcn.com/')
   }
 
   render() {
@@ -45,25 +60,25 @@ export default class App extends Component {
         <View style={styles.safearea}>
             {this.state.loading? null:
               <View style={[styles.container, { height, width }]}>
-                <Counter img={require('./assets/draclila.jpg')} reset={this.state.time}/>
-                <Counter img={require('./assets/dracvermell.jpg')} reset={this.state.time} />
+                <Counter language={this.state.language} img={require('./assets/draclila.jpg')} reset={this.state.time}/>
+                <Counter language={this.state.language} img={require('./assets/dracvermell.jpg')} reset={this.state.time} />
               </View>
             }
 
           <View style={[styles.buttons, { width }]}>
             <TouchableOpacity onPress={() => { this.resetGame() }}>
               <View style={styles.fullsize}>
-                <Text style={styles.textsmall}>Reiniciar juego</Text>
+                <Text style={styles.textsmall}>{this.state.restart}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { this.throwDice() }}>
               <View style={styles.fullsize}>
-                <Text style={styles.textsmall}>Lanzar dado</Text>
+                <Text style={styles.textsmall}>{this.state.dice}</Text>
               </View>          
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { this.naips() }}>
               <View style={styles.fullsize}>
-                <Text style={styles.textsmall}>Tienda Naips</Text>
+                <Image source={require('./assets/naips.png')} resizeMode='contain' style={{ width: '80%' }} />
               </View>
             </TouchableOpacity>
           </View>
