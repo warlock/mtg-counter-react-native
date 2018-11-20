@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { StyleSheet, Alert, View, Dimensions, Text, TouchableOpacity, Image } from 'react-native'
 import Counter from './components/Counter'
-const { height, width } = Dimensions.get('screen')
 import { DangerZone } from 'expo'
+import dayjs from 'dayjs'
+const { height, width } = Dimensions.get('screen')
 const { Localization } = DangerZone
 
 export default class App extends Component {
@@ -13,11 +14,17 @@ export default class App extends Component {
       time: Date.now(),
       restart: 'Restart',
       dice: 'Throw a dice',
+      timer: 'Start timer',
+      changelang: 'Change Language',
+      exit: 'Exit',
       language: 'en'
     }
     this.resetGame.bind(this)
     this.throwDice.bind(this)
     this.naips.bind(this)
+    this.startTimer.bind(this)
+    this.stopTimer.bind(this)
+    this.eventTimer.bind(this)
   }
 
   async componentWillMount () {
@@ -25,19 +32,28 @@ export default class App extends Component {
       this.setState({
         language: 'cat',
         restart: 'Reiniciar joc',
-        dice: 'Llençar dau'
+        dice: 'Llençar dau',
+        timer: 'Iniciar temporitzador',
+        changelang: 'Canvia idioma',
+        exit: 'Sortir'
       })
     } else if (Localization.locale.includes('es-')) {
       this.setState({
         language: 'es',
         restart: 'Reiniciar juego',
-        dice: 'Lanzar dado'
+        dice: 'Lanzar dado',
+        timer: 'Iniciar temporizador',
+        changelang: 'Cambiar idioma',
+        exit: 'Salir'
       })
     } else {
       this.setState({
         language: 'en',
         restart: 'Restart game',
-        dice: 'Throw a dice'
+        dice: 'Throw a dice',
+        timer: '50:00',
+        changelang: 'Change Language',
+        exit: 'Exit'
       })
     }
   }
@@ -54,10 +70,42 @@ export default class App extends Component {
     window.open('http://www.naipsbcn.com/')
   }
 
+  startTimer () {
+    console.log('START TIMER')
+    this.seconds = 50*60*1000
+    this.timerint = setInterval(() => {
+      this.setState({ timer: dayjs(this.seconds).format('mm:ss') })
+      if (this.seconds === 0) {
+        clearInterval(this.timerint)
+        this.timerint = null
+      }  else this.seconds = this.seconds - 1000
+    }, 1000)
+  }
+
+  stopTimer () {
+    console.log('STOP TIMER')
+    clearInterval(this.timerint)
+    this.timerint = null
+    this.setState({
+      timer: `[${this.state.timer}]`
+    })
+  }
+
+  eventTimer () {
+    if (this.timerint) this.stopTimer()
+    else this.startTimer()
+  }
+
+
   render() {
     return (
       <View style={styles.back}>
         <View style={styles.safearea}>
+          <View style={[styles.buttons, { width }]}>
+            <Text style={styles.textsmall} onPress={() => { this.eventTimer() }}>{this.state.timer}</Text>
+            <Text style={styles.textsmall}>{this.state.dice}</Text>
+            <Text style={styles.textsmall}>{this.state.changelang}</Text>
+          </View>
             {this.state.loading? null:
               <View style={[styles.container, { height, width }]}>
                 <Counter language={this.state.language} img={require('./assets/draclila.jpg')} reset={this.state.time}/>
@@ -97,7 +145,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   safearea: {
-    height: '90%',
+    height: '95%',
     width: '90%'
   },
   container: {
