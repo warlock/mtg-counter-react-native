@@ -53,7 +53,7 @@ class Counter extends Component {
       if (language === 'cat') {
         this.setState({
           lifetext: 'vida',
-          poisontext: 'veri'
+          poisontext: 'verí'
         })
       } else if (language === 'es') {
         this.setState({

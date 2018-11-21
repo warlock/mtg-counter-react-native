@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Alert, View, Dimensions, Text, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Alert, View, Dimensions, Text, TouchableOpacity, Image, Linking, AsyncStorage } from 'react-native'
 import Counter from './components/Counter'
 import { DangerZone } from 'expo'
 import dayjs from 'dayjs'
@@ -25,10 +25,31 @@ export default class App extends Component {
     this.startTimer.bind(this)
     this.stopTimer.bind(this)
     this.eventTimer.bind(this)
+    this.changeLang.bind(this)
+    this.selectLang.bind(this)
   }
 
   async componentWillMount () {
-    if (Localization.locale === 'catala') {
+    var lang = await AsyncStorage.getItem('@lang')
+    if (!lang) lang = Localization.locale 
+    this.changeLang(lang)
+  }
+
+  selectLang () {
+    Alert.alert(
+      this.state.changelang,
+      'hola',
+      [
+        {text: 'English', onPress: () => this.changeLang('en')},
+        {text: 'Español', onPress: () => this.changeLang('es-ES')},
+        {text: 'Català', onPress: () => this.changeLang('ca-ES')},
+        {text: 'Cancel', style: 'cancel'}
+      ]
+    )
+  }
+
+  changeLang (locale) {
+    if (locale === 'ca-ES') {
       this.setState({
         language: 'cat',
         restart: 'Reiniciar joc',
@@ -37,7 +58,8 @@ export default class App extends Component {
         changelang: 'Canvia idioma',
         exit: 'Sortir'
       })
-    } else if (Localization.locale.includes('es-')) {
+      AsyncStorage.setItem('@lang', 'ca-ES')
+    } else if (locale.includes('es-')) {
       this.setState({
         language: 'es',
         restart: 'Reiniciar juego',
@@ -46,15 +68,17 @@ export default class App extends Component {
         changelang: 'Cambiar idioma',
         exit: 'Salir'
       })
+      AsyncStorage.setItem('@lang', 'es-ES')
     } else {
       this.setState({
         language: 'en',
         restart: 'Restart game',
         dice: 'Throw a dice',
-        timer: '50:00',
+        timer: 'Start timer',
         changelang: 'Change Language',
         exit: 'Exit'
       })
+      AsyncStorage.setItem('@lang', 'en')
     }
   }
 
@@ -67,7 +91,7 @@ export default class App extends Component {
   }
 
   naips () {
-    window.open('http://www.naipsbcn.com/')
+    Linking.openURL('http://www.naipsbcn.com/')
   }
 
   startTimer () {
@@ -104,7 +128,7 @@ export default class App extends Component {
           <View style={[styles.buttons, { width }]}>
             <Text style={styles.textsmall} onPress={() => { this.eventTimer() }}>{this.state.timer}</Text>
             <Text style={styles.textsmall}>{this.state.dice}</Text>
-            <Text style={styles.textsmall}>{this.state.changelang}</Text>
+            <Text style={styles.textsmall} onPress={() => { this.selectLang() }}>{this.state.changelang}</Text>
           </View>
             {this.state.loading? null:
               <View style={[styles.container, { height, width }]}>
