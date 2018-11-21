@@ -95,7 +95,6 @@ export default class App extends Component {
   }
 
   startTimer () {
-    console.log('START TIMER')
     this.seconds = 50*60*1000
     this.timerint = setInterval(() => {
       this.setState({ timer: dayjs(this.seconds).format('mm:ss') })
@@ -107,7 +106,6 @@ export default class App extends Component {
   }
 
   stopTimer () {
-    console.log('STOP TIMER')
     clearInterval(this.timerint)
     this.timerint = null
     this.setState({
