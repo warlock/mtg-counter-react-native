@@ -11,13 +11,26 @@ export default class App extends Component {
   constructor () {
     super()
     this.state = {
-      time: Date.now(),
-      restart: 'Restart',
-      dice: 'Throw a dice',
-      timer: 'Start timer',
-      changelang: 'Change Language',
-      exit: 'Exit',
-      language: 'en'
+      viewtimer: false,
+      timer: '50:00',
+      n_restart: 'Restart',
+      n_dice: 'Throw a dice',
+      n_timer: 'Start timer',
+      n_changelang: 'Change Language',
+      n_exit: 'Exit',
+      n_life: 'life',
+      n_poison: 'poison',
+      language: 'en',
+      players: [
+        {
+          life: 20,
+          poison: 0
+        },
+        {
+          life: 20,
+          poison: 0
+        }
+      ]
     }
     this.resetGame.bind(this)
     this.throwDice.bind(this)
@@ -27,6 +40,10 @@ export default class App extends Component {
     this.eventTimer.bind(this)
     this.changeLang.bind(this)
     this.selectLang.bind(this)
+
+    this.poisonchange.bind(this)
+    this.uplife.bind(this)
+    this.downlife.bind(this)
   }
 
   async componentWillMount () {
@@ -51,39 +68,60 @@ export default class App extends Component {
   changeLang (locale) {
     if (locale === 'ca-ES') {
       this.setState({
-        language: 'cat',
-        restart: 'Reiniciar joc',
-        dice: 'Llençar dau',
-        timer: 'Iniciar temporitzador',
-        changelang: 'Canvia idioma',
-        exit: 'Sortir'
+        n_language: 'cat',
+        n_restart: 'Reiniciar joc',
+        n_dice: 'Llençar dau',
+        n_timer: 'Iniciar temporitzador',
+        n_changelang: 'Canvia idioma',
+        n_exit: 'Sortir',
+        n_life: 'vida',
+        n_poison: 'verí'
       })
       AsyncStorage.setItem('@lang', 'ca-ES')
     } else if (locale.includes('es-')) {
       this.setState({
-        language: 'es',
-        restart: 'Reiniciar juego',
-        dice: 'Lanzar dado',
-        timer: 'Iniciar temporizador',
-        changelang: 'Cambiar idioma',
-        exit: 'Salir'
+        n_language: 'es',
+        n_restart: 'Reiniciar juego',
+        n_dice: 'Lanzar dado',
+        n_timer: 'Iniciar temporizador',
+        n_changelang: 'Cambiar idioma',
+        n_exit: 'Salir',
+        n_life: 'vida',
+        n_poison: 'veneno'
       })
       AsyncStorage.setItem('@lang', 'es-ES')
     } else {
       this.setState({
-        language: 'en',
-        restart: 'Restart game',
-        dice: 'Throw a dice',
-        timer: 'Start timer',
-        changelang: 'Change Language',
-        exit: 'Exit'
+        n_language: 'en',
+        n_restart: 'Restart game',
+        n_dice: 'Throw a dice',
+        n_timer: 'Start timer',
+        n_changelang: 'Change Language',
+        n_exit: 'Exit',
+        n_life: 'life',
+        n_poison: 'poison'
       })
       AsyncStorage.setItem('@lang', 'en')
     }
   }
 
   resetGame () {
-    this.setState({ time: Date.now() })
+    clearInterval(this.timerint)
+    this.timerint = null
+    this.setState({
+      viewtimer: false,
+      timer: '50:00',
+      players: [
+        {
+          life: 20,
+          poison: 0
+        },
+        {
+          life: 20,
+          poison: 0
+        }
+      ]
+    })
   }
 
   throwDice () {
@@ -95,7 +133,9 @@ export default class App extends Component {
   }
 
   startTimer () {
+    console.log('start timmer')
     this.seconds = 50*60*1000
+    this.setState({ viewtimer: true })
     this.timerint = setInterval(() => {
       this.setState({ timer: dayjs(this.seconds).format('mm:ss') })
       if (this.seconds === 0) {
@@ -106,6 +146,7 @@ export default class App extends Component {
   }
 
   stopTimer () {
+    console.log('stop timmer')
     clearInterval(this.timerint)
     this.timerint = null
     this.setState({
@@ -118,32 +159,70 @@ export default class App extends Component {
     else this.startTimer()
   }
 
+  uplife(player, num) {
+    const players = [...this.state.players]
+    players[player].life = players[player].life + num
+    this.setState({ players })
+  }
+
+  downlife(player) {
+    const players = [...this.state.players]
+    players[player].life = players[player].life - 1
+    this.setState({ players })
+  }
+
+  poisonchange (player, action) {
+    const players = [...this.state.players]
+    players[player].poison = action? players[player].poison + 1 : players[player].poison - 1
+    this.setState(players)
+  }
 
   render() {
     return (
       <View style={styles.back}>
         <View style={styles.safearea}>
           <View style={[styles.buttons, { width }]}>
-            <Text style={styles.textsmall} onPress={() => { this.eventTimer() }}>{this.state.timer}</Text>
-            <Text style={styles.textsmall}>{this.state.dice}</Text>
-            <Text style={styles.textsmall} onPress={() => { this.selectLang() }}>{this.state.changelang}</Text>
+            {this.state.viewtimer?
+              <Text style={styles.textsmall} onPress={() => { this.eventTimer() }}>{this.state.timer}</Text>
+              :
+              <Text style={styles.textsmall} onPress={() => { this.eventTimer() }}>{this.state.n_timer}</Text>
+            }
+            <Text style={styles.textsmall} onPress={() => { this.selectLang() }}>{this.state.n_changelang}</Text>
           </View>
             {this.state.loading? null:
               <View style={[styles.container, { height, width }]}>
-                <Counter language={this.state.language} img={require('./assets/draclila.jpg')} reset={this.state.time}/>
-                <Counter language={this.state.language} img={require('./assets/dracvermell.jpg')} reset={this.state.time} />
+                <Counter
+                  n_life={this.state.n_life}
+                  n_poison={this.state.n_poison}
+                  uplife={(num) => { this.uplife(0, num) }}
+                  downlife={() => { this.downlife(0) }}
+                  poisonchange={action => { this.poisonchange(0, action) }}
+                  life={this.state.players[0].life}
+                  poison={this.state.players[0].poison}
+                  img={require('./assets/draclila.jpg')}
+                />
+                <Counter
+                  n_life={this.state.n_life}
+                  n_poison={this.state.n_poison}
+                  uplife={(num) => { this.uplife(1, num) }}
+                  downlife={() => { this.downlife(1) }}
+                  poisonchange={action => { this.poisonchange(1, action) }}
+                  life={this.state.players[1].life}
+                  poison={this.state.players[1].poison}
+                  img={require('./assets/dracvermell.jpg')}
+                />
               </View>
             }
 
           <View style={[styles.buttons, { width }]}>
             <TouchableOpacity onPress={() => { this.resetGame() }}>
               <View style={styles.fullsize}>
-                <Text style={styles.textsmall}>{this.state.restart}</Text>
+                <Text style={styles.textsmall}>{this.state.n_restart}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { this.throwDice() }}>
               <View style={styles.fullsize}>
-                <Text style={styles.textsmall}>{this.state.dice}</Text>
+                <Text style={styles.textsmall}>{this.state.n_dice}</Text>
               </View>          
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { this.naips() }}>
