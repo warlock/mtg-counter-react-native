@@ -1,5 +1,16 @@
 import React, { Component } from 'react'
-import { StyleSheet, Alert, View, Dimensions, Text, TouchableOpacity, Image, Linking, AsyncStorage } from 'react-native'
+import {
+  StyleSheet,
+  Alert,
+  View,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  Image,
+  Linking,
+  AsyncStorage,
+  SafeAreaView
+} from 'react-native'
 import Counter from './components/Counter'
 import { DangerZone } from 'expo'
 import dayjs from 'dayjs'
@@ -7,8 +18,7 @@ const { height, width } = Dimensions.get('screen')
 const { Localization } = DangerZone
 
 export default class App extends Component {
-
-  constructor () {
+  constructor() {
     super()
     this.state = {
       viewtimer: false,
@@ -46,26 +56,22 @@ export default class App extends Component {
     this.downlife.bind(this)
   }
 
-  async componentWillMount () {
+  async componentWillMount() {
     var lang = await AsyncStorage.getItem('@lang')
-    if (!lang) lang = Localization.locale 
+    if (!lang) lang = Localization.locale
     this.changeLang(lang)
   }
 
-  selectLang () {
-    Alert.alert(
-      this.state.changelang,
-      'hola',
-      [
-        {text: 'English', onPress: () => this.changeLang('en')},
-        {text: 'Español', onPress: () => this.changeLang('es-ES')},
-        {text: 'Català', onPress: () => this.changeLang('ca-ES')},
-        {text: 'Cancel', style: 'cancel'}
-      ]
-    )
+  selectLang() {
+    Alert.alert(this.state.changelang, 'hola', [
+      { text: 'English', onPress: () => this.changeLang('en') },
+      { text: 'Español', onPress: () => this.changeLang('es-ES') },
+      { text: 'Català', onPress: () => this.changeLang('ca-ES') },
+      { text: 'Cancel', style: 'cancel' }
+    ])
   }
 
-  changeLang (locale) {
+  changeLang(locale) {
     if (locale === 'ca-ES') {
       this.setState({
         n_language: 'cat',
@@ -105,7 +111,7 @@ export default class App extends Component {
     }
   }
 
-  resetGame () {
+  resetGame() {
     clearInterval(this.timerint)
     this.timerint = null
     this.setState({
@@ -124,28 +130,28 @@ export default class App extends Component {
     })
   }
 
-  throwDice () {
+  throwDice() {
     Alert.alert('Resultado del dado:', `${Math.floor(Math.random() * 6) + 1}`)
   }
 
-  naips () {
+  naips() {
     Linking.openURL('http://www.naipsbcn.com/')
   }
 
-  startTimer () {
+  startTimer() {
     console.log('start timmer')
-    this.seconds = 50*60*1000
+    this.seconds = 50 * 60 * 1000
     this.setState({ viewtimer: true })
     this.timerint = setInterval(() => {
       this.setState({ timer: dayjs(this.seconds).format('mm:ss') })
       if (this.seconds === 0) {
         clearInterval(this.timerint)
         this.timerint = null
-      }  else this.seconds = this.seconds - 1000
+      } else this.seconds = this.seconds - 1000
     }, 1000)
   }
 
-  stopTimer () {
+  stopTimer() {
     console.log('stop timmer')
     clearInterval(this.timerint)
     this.timerint = null
@@ -154,7 +160,7 @@ export default class App extends Component {
     })
   }
 
-  eventTimer () {
+  eventTimer() {
     if (this.timerint) this.stopTimer()
     else this.startTimer()
   }
@@ -171,97 +177,142 @@ export default class App extends Component {
     this.setState({ players })
   }
 
-  poisonchange (player, action) {
+  poisonchange(player, action) {
     const players = [...this.state.players]
-    players[player].poison = action? players[player].poison + 1 : players[player].poison - 1
+    players[player].poison = action ? players[player].poison + 1 : players[player].poison - 1
     this.setState(players)
   }
 
   render() {
     return (
-      <View style={styles.back}>
+      <SafeAreaView style={styles.back}>
         <View style={styles.safearea}>
           <View style={[styles.buttons, { width }]}>
-            {this.state.viewtimer?
-              <Text style={styles.textsmall} onPress={() => { this.eventTimer() }}>{this.state.timer}</Text>
-              :
-              <Text style={styles.textsmall} onPress={() => { this.eventTimer() }}>{this.state.n_timer}</Text>
-            }
-            <Text style={styles.textsmall} onPress={() => { this.selectLang() }}>{this.state.n_changelang}</Text>
+            {this.state.viewtimer ? (
+              <Text
+                style={styles.textsmall}
+                onPress={() => {
+                  this.eventTimer()
+                }}
+              >
+                {this.state.timer}
+              </Text>
+            ) : (
+              <Text
+                style={styles.textsmall}
+                onPress={() => {
+                  this.eventTimer()
+                }}
+              >
+                {this.state.n_timer}
+              </Text>
+            )}
+            <Text
+              style={styles.textsmall}
+              onPress={() => {
+                this.selectLang()
+              }}
+            >
+              {this.state.n_changelang}
+            </Text>
           </View>
-            {this.state.loading? null:
-              <View style={[styles.container, { height, width }]}>
-                <Counter
-                  n_life={this.state.n_life}
-                  n_poison={this.state.n_poison}
-                  uplife={(num) => { this.uplife(0, num) }}
-                  downlife={() => { this.downlife(0) }}
-                  poisonchange={action => { this.poisonchange(0, action) }}
-                  life={this.state.players[0].life}
-                  poison={this.state.players[0].poison}
-                  img={require('./assets/draclila.jpg')}
-                />
-                <Counter
-                  n_life={this.state.n_life}
-                  n_poison={this.state.n_poison}
-                  uplife={(num) => { this.uplife(1, num) }}
-                  downlife={() => { this.downlife(1) }}
-                  poisonchange={action => { this.poisonchange(1, action) }}
-                  life={this.state.players[1].life}
-                  poison={this.state.players[1].poison}
-                  img={require('./assets/dracvermell.jpg')}
-                />
-              </View>
-            }
+          {this.state.loading ? null : (
+            <View style={styles.container}>
+              <Counter
+                n_life={this.state.n_life}
+                n_poison={this.state.n_poison}
+                uplife={num => {
+                  this.uplife(0, num)
+                }}
+                downlife={() => {
+                  this.downlife(0)
+                }}
+                poisonchange={action => {
+                  this.poisonchange(0, action)
+                }}
+                life={this.state.players[0].life}
+                poison={this.state.players[0].poison}
+                img={require('./assets/draclila.jpg')}
+              />
+              <Counter
+                n_life={this.state.n_life}
+                n_poison={this.state.n_poison}
+                uplife={num => {
+                  this.uplife(1, num)
+                }}
+                downlife={() => {
+                  this.downlife(1)
+                }}
+                poisonchange={action => {
+                  this.poisonchange(1, action)
+                }}
+                life={this.state.players[1].life}
+                poison={this.state.players[1].poison}
+                img={require('./assets/dracvermell.jpg')}
+              />
+            </View>
+          )}
 
           <View style={[styles.buttons, { width }]}>
-            <TouchableOpacity onPress={() => { this.resetGame() }}>
+            <TouchableOpacity
+              onPress={() => {
+                this.resetGame()
+              }}
+            >
               <View style={styles.fullsize}>
                 <Text style={styles.textsmall}>{this.state.n_restart}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { this.throwDice() }}>
+            <TouchableOpacity
+              onPress={() => {
+                this.throwDice()
+              }}
+            >
               <View style={styles.fullsize}>
                 <Text style={styles.textsmall}>{this.state.n_dice}</Text>
-              </View>          
+              </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { this.naips() }}>
+            <TouchableOpacity
+              onPress={() => {
+                this.naips()
+              }}
+            >
               <View style={styles.fullsize}>
-                <Image source={require('./assets/naips.png')} resizeMode='contain' style={{ width: '80%' }} />
+                <Image source={require('./assets/naips.png')} resizeMode="contain" style={{ width: '80%' }} />
               </View>
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     )
   }
 }
 
 const styles = StyleSheet.create({
   back: {
-    backgroundColor: 'grey',
+    backgroundColor: 'yellow',
     height,
     width,
     alignItems: 'center',
     flexDirection: 'row'
   },
   safearea: {
-    height: '95%',
-    width: '90%'
+    height: '100%',
+    width: '100%'
   },
   container: {
+    backgroundColor: 'blue',
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-around',
-    flexDirection: 'row'
+    justifyContent: 'space-around'
   },
   buttons: {
     alignItems: 'center',
     justifyContent: 'space-around',
     flexDirection: 'row'
   },
-  fullsize : {
-    width: (width/3),
+  fullsize: {
+    width: width / 3,
     alignItems: 'center'
   },
   textsmall: { fontSize: 25 }
