@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
-import { Dimensions, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
+import { View, Dimensions, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
+import { Entypo } from '@expo/vector-icons'
 
 class Counter extends PureComponent {
   state = {
@@ -15,13 +16,31 @@ class Counter extends PureComponent {
         style={[styles.background, { opacity: this.props.life < 1 || this.props.poison > 9 ? 0.4 : 1 }]}
       >
         {this.state.life ? (
-          <TouchableOpacity
-            style={styles.opacity}
-            onPress={() => this.props.downlife()}
-            hitSlop={{ top: 0, bottom: 0, left: 0, right: width / 2 }}
-          >
+          <View style={styles.container}>
+            <Entypo
+              style={{
+                position: 'absolute',
+                zIndex: 3,
+                right: this.props.up ? 20 : null,
+                top: this.props.up ? 20 : null,
+                left: this.props.up ? null : 20,
+                bottom: this.props.up ? null : 20,
+                transform: this.props.up ? [{ rotate: '180deg' }] : []
+              }}
+              name={this.state.life ? 'drop' : 'heart'}
+              size={32}
+              color="white"
+              onPress={() => {
+                console.log('aqui?')
+                this.setState({ life: !this.state.life })
+              }}
+            />
+            <TouchableOpacity style={styles.opacityl} onPress={() => this.props.downlife()} />
+            <TouchableOpacity style={styles.opacityr} onPress={() => this.props.uplife()} />
             <Text
               style={{
+                position: 'absolute',
+                zIndex: 0,
                 fontSize: width / 2,
                 color: 'lightgreen',
                 transform: this.props.up ? [{ rotate: '180deg' }] : []
@@ -29,11 +48,41 @@ class Counter extends PureComponent {
             >
               {this.props.life}
             </Text>
-          </TouchableOpacity>
+          </View>
         ) : (
-          <TouchableOpacity onPress={() => this.props.poisonchange(true)}>
-            <Text style={{ fontSize: width / 2, color: 'magenta' }}>{this.props.poison}</Text>
-          </TouchableOpacity>
+          <View style={styles.container}>
+            <Entypo
+              style={{
+                position: 'absolute',
+                zIndex: 3,
+                right: this.props.up ? 20 : null,
+                top: this.props.up ? 20 : null,
+                left: this.props.up ? null : 20,
+                bottom: this.props.up ? null : 20,
+                transform: this.props.up ? [{ rotate: '180deg' }] : []
+              }}
+              name={this.state.life ? 'drop' : 'heart'}
+              size={32}
+              color="white"
+              onPress={() => {
+                console.log('aqui?')
+                this.setState({ life: !this.state.life })
+              }}
+            />
+            <TouchableOpacity style={styles.opacityl} onPress={() => this.props.downpoison()} />
+            <TouchableOpacity style={styles.opacityr} onPress={() => this.props.uppoison()} />
+            <Text
+              style={{
+                position: 'absolute',
+                zIndex: 0,
+                fontSize: width / 2,
+                color: 'magenta',
+                transform: this.props.up ? [{ rotate: '180deg' }] : []
+              }}
+            >
+              {this.props.poison}
+            </Text>
+          </View>
         )}
       </ImageBackground>
     )
@@ -46,11 +95,28 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: 'red'
   },
-  opacity: {
+  container: {
+    position: 'absolute',
     alignItems: 'center',
     width: '100%',
     height: '100%',
     justifyContent: 'center'
+  },
+  opacityl: {
+    position: 'absolute',
+    width: '50%',
+    height: '100%',
+    zIndex: 1,
+    //backgroundColor: 'red',
+    left: 0
+  },
+  opacityr: {
+    position: 'absolute',
+    width: '50%',
+    height: '100%',
+    zIndex: 1,
+    //backgroundColor: 'blue',
+    right: 0
   },
   background: {
     width: '100%',
