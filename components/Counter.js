@@ -9,7 +9,6 @@ class Counter extends PureComponent {
 
   render() {
     const { width } = Dimensions.get('screen')
-    console.log(width)
     return (
       <ImageBackground
         source={this.props.img}
@@ -31,7 +30,6 @@ class Counter extends PureComponent {
               size={32}
               color="white"
               onPress={() => {
-                console.log('aqui?')
                 this.setState({ life: !this.state.life })
               }}
             />
@@ -65,7 +63,6 @@ class Counter extends PureComponent {
               size={32}
               color="white"
               onPress={() => {
-                console.log('aqui?')
                 this.setState({ life: !this.state.life })
               }}
             />
