@@ -13,6 +13,7 @@ import {
 } from 'react-native'
 import Counter from './components/Counter'
 import { DangerZone } from 'expo'
+import { Ionicons } from '@expo/vector-icons'
 import dayjs from 'dayjs'
 const { height, width } = Dimensions.get('screen')
 const { Localization } = DangerZone
@@ -50,7 +51,6 @@ export default class App extends Component {
     this.eventTimer.bind(this)
     this.changeLang.bind(this)
     this.selectLang.bind(this)
-
     this.poisonchange.bind(this)
     this.uplife.bind(this)
     this.downlife.bind(this)
@@ -187,72 +187,56 @@ export default class App extends Component {
     return (
       <SafeAreaView style={styles.back}>
         <View style={styles.safearea}>
-          <View style={[styles.buttons, { width }]}>
-            {this.state.viewtimer ? (
-              <Text
-                style={styles.textsmall}
-                onPress={() => {
-                  this.eventTimer()
-                }}
-              >
-                {this.state.timer}
-              </Text>
-            ) : (
-              <Text
-                style={styles.textsmall}
-                onPress={() => {
-                  this.eventTimer()
-                }}
-              >
-                {this.state.n_timer}
-              </Text>
-            )}
-            <Text
-              style={styles.textsmall}
-              onPress={() => {
-                this.selectLang()
+          <View style={styles.container}>
+            <Counter
+              up={true}
+              n_life={this.state.n_life}
+              n_poison={this.state.n_poison}
+              uplife={num => {
+                this.uplife(0, num)
               }}
-            >
-              {this.state.n_changelang}
-            </Text>
-          </View>
-          {this.state.loading ? null : (
-            <View style={styles.container}>
-              <Counter
-                n_life={this.state.n_life}
-                n_poison={this.state.n_poison}
-                uplife={num => {
-                  this.uplife(0, num)
-                }}
-                downlife={() => {
-                  this.downlife(0)
-                }}
-                poisonchange={action => {
-                  this.poisonchange(0, action)
-                }}
-                life={this.state.players[0].life}
-                poison={this.state.players[0].poison}
-                img={require('./assets/draclila.jpg')}
-              />
-              <Counter
-                n_life={this.state.n_life}
-                n_poison={this.state.n_poison}
-                uplife={num => {
-                  this.uplife(1, num)
-                }}
-                downlife={() => {
-                  this.downlife(1)
-                }}
-                poisonchange={action => {
-                  this.poisonchange(1, action)
-                }}
-                life={this.state.players[1].life}
-                poison={this.state.players[1].poison}
-                img={require('./assets/dracvermell.jpg')}
-              />
+              downlife={() => {
+                this.downlife(0)
+              }}
+              poisonchange={action => {
+                this.poisonchange(0, action)
+              }}
+              life={this.state.players[0].life}
+              poison={this.state.players[0].poison}
+              img={require('./assets/draclila.jpg')}
+            />
+            <View style={[styles.buttons, { width }]}>
+              {this.state.viewtimer ? (
+                <Text
+                  style={styles.textsmall}
+                  onPress={() => {
+                    this.eventTimer()
+                  }}
+                >
+                  {this.state.timer}
+                </Text>
+              ) : (
+                <Ionicons name="clockcircle" size={32} color="green" />
+              )}
+              <Ionicons name="md-checkmark-circle" size={32} color="green" />
             </View>
-          )}
-
+            <Counter
+              n_life={this.state.n_life}
+              n_poison={this.state.n_poison}
+              uplife={num => {
+                this.uplife(1, num)
+              }}
+              downlife={() => {
+                this.downlife(1)
+              }}
+              poisonchange={action => {
+                this.poisonchange(1, action)
+              }}
+              life={this.state.players[1].life}
+              poison={this.state.players[1].poison}
+              img={require('./assets/dracvermell.jpg')}
+            />
+          </View>
           <View style={[styles.buttons, { width }]}>
             <TouchableOpacity
               onPress={() => {
@@ -303,8 +287,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'blue',
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-around'
+    flexDirection: 'column',
+    alignItems: 'stretch'
   },
   buttons: {
     alignItems: 'center',
