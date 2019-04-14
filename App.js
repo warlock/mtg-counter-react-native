@@ -8,16 +8,13 @@ import {
   TouchableOpacity,
   Image,
   Linking,
-  AsyncStorage,
   SafeAreaView,
   Font
 } from 'react-native'
 import Counter from './components/Counter'
-import { DangerZone } from 'expo'
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 import dayjs from 'dayjs'
 const { height, width } = Dimensions.get('screen')
-const { Localization } = DangerZone
 
 export default class App extends Component {
   constructor() {
@@ -25,14 +22,6 @@ export default class App extends Component {
     this.state = {
       viewtimer: false,
       timer: '50:00',
-      n_restart: 'Restart',
-      n_dice: 'Throw a dice',
-      n_timer: 'Start timer',
-      n_changelang: 'Change Language',
-      n_exit: 'Exit',
-      n_life: 'life',
-      n_poison: 'poison',
-      language: 'en',
       players: [
         {
           life: 20,
@@ -50,66 +39,9 @@ export default class App extends Component {
     this.startTimer.bind(this)
     this.stopTimer.bind(this)
     this.eventTimer.bind(this)
-    this.changeLang.bind(this)
-    this.selectLang.bind(this)
     this.poisonchange.bind(this)
     this.uplife.bind(this)
     this.downlife.bind(this)
-  }
-
-  async componentWillMount() {
-    var lang = await AsyncStorage.getItem('@lang')
-    if (!lang) lang = Localization.locale
-    this.changeLang(lang)
-  }
-
-  selectLang() {
-    Alert.alert(this.state.changelang, 'hola', [
-      { text: 'English', onPress: () => this.changeLang('en') },
-      { text: 'Español', onPress: () => this.changeLang('es-ES') },
-      { text: 'Català', onPress: () => this.changeLang('ca-ES') },
-      { text: 'Cancel', style: 'cancel' }
-    ])
-  }
-
-  changeLang(locale) {
-    if (locale === 'ca-ES') {
-      this.setState({
-        n_language: 'cat',
-        n_restart: 'Reiniciar joc',
-        n_dice: 'Llençar dau',
-        n_timer: 'Iniciar temporitzador',
-        n_changelang: 'Canvia idioma',
-        n_exit: 'Sortir',
-        n_life: 'vida',
-        n_poison: 'verí'
-      })
-      AsyncStorage.setItem('@lang', 'ca-ES')
-    } else if (locale.includes('es-')) {
-      this.setState({
-        n_language: 'es',
-        n_restart: 'Reiniciar juego',
-        n_dice: 'Lanzar dado',
-        n_timer: 'Iniciar temporizador',
-        n_changelang: 'Cambiar idioma',
-        n_exit: 'Salir',
-        n_life: 'vida',
-        n_poison: 'veneno'
-      })
-      AsyncStorage.setItem('@lang', 'es-ES')
-    } else {
-      this.setState({
-        n_language: 'en',
-        n_restart: 'Restart game',
-        n_dice: 'Throw a dice',
-        n_timer: 'Start timer',
-        n_changelang: 'Change Language',
-        n_exit: 'Exit',
-        n_life: 'life',
-        n_poison: 'poison'
-      })
-      AsyncStorage.setItem('@lang', 'en')
-    }
   }
 
   resetGame() {
@@ -132,7 +64,7 @@ export default class App extends Component {
   }
 
   throwDice() {
-    Alert.alert('Resultado del dado:', `${Math.floor(Math.random() * 6) + 1}`)
+    Alert.alert(`${Math.floor(Math.random() * 6) + 1}`)
   }
 
   naips() {
@@ -140,11 +72,11 @@ export default class App extends Component {
   }
 
   startTimer() {
-    console.log('start timmer')
     this.seconds = 50 * 60 * 1000
     this.setState({ viewtimer: true })
     this.timerint = setInterval(() => {
       this.setState({ timer: dayjs(this.seconds).format('mm:ss') })
+      console.log(this.seconds)
       if (this.seconds === 0) {
         clearInterval(this.timerint)
         this.timerint = null
@@ -153,7 +85,6 @@ export default class App extends Component {
   }
 
   stopTimer() {
-    console.log('stop timmer')
     clearInterval(this.timerint)
     this.timerint = null
     this.setState({
@@ -291,5 +222,5 @@ const styles = StyleSheet.create({
     width: width / 3,
     alignItems: 'center'
   },
-  textsmall: { fontSize: 25 }
+  textsmall: { fontSize: 25, color: 'white' }
 })
