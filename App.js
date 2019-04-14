@@ -88,9 +88,9 @@ export default class App extends Component {
     else this.startTimer()
   }
 
-  uplife(player, num) {
+  uplife(player) {
     const players = [...this.state.players]
-    players[player].life = players[player].life + num
+    players[player].life = players[player].life + 1
     this.setState({ players })
   }
 
@@ -100,10 +100,16 @@ export default class App extends Component {
     this.setState({ players })
   }
 
-  poisonchange(player, action) {
+  uppoison(player) {
     const players = [...this.state.players]
-    players[player].poison = action ? players[player].poison + 1 : players[player].poison - 1
-    this.setState(players)
+    players[player].poison = players[player].poison + 1
+    this.setState({ players })
+  }
+
+  downpoison(player) {
+    const players = [...this.state.players]
+    players[player].poison = players[player].poison - 1
+    this.setState({ players })
   }
 
   render() {
@@ -115,14 +121,17 @@ export default class App extends Component {
               up={true}
               n_life={this.state.n_life}
               n_poison={this.state.n_poison}
-              uplife={num => {
-                this.uplife(0, num)
+              uplife={() => {
+                this.uplife(0)
               }}
               downlife={() => {
                 this.downlife(0)
               }}
-              poisonchange={action => {
-                this.poisonchange(0, action)
+              uppoison={() => {
+                this.uppoison(0)
+              }}
+              downpoison={() => {
+                this.downpoison(0)
               }}
               life={this.state.players[0].life}
               poison={this.state.players[0].poison}
@@ -166,14 +175,17 @@ export default class App extends Component {
             <Counter
               n_life={this.state.n_life}
               n_poison={this.state.n_poison}
-              uplife={num => {
-                this.uplife(1, num)
+              uplife={() => {
+                this.uplife(1)
               }}
               downlife={() => {
                 this.downlife(1)
               }}
-              poisonchange={action => {
-                this.poisonchange(1, action)
+              uppoison={() => {
+                this.uppoison(1)
+              }}
+              downpoison={() => {
+                this.downpoison(1)
               }}
               life={this.state.players[1].life}
               poison={this.state.players[1].poison}
