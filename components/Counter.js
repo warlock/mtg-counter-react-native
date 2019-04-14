@@ -27,7 +27,7 @@ class Counter extends PureComponent {
                 transform: this.props.up ? [{ rotate: '180deg' }] : []
               }}
               name={this.state.life ? 'drop' : 'heart'}
-              size={32}
+              size={35}
               color="white"
               onPress={() => {
                 this.setState({ life: !this.state.life })
@@ -60,7 +60,7 @@ class Counter extends PureComponent {
                 transform: this.props.up ? [{ rotate: '180deg' }] : []
               }}
               name={this.state.life ? 'drop' : 'heart'}
-              size={32}
+              size={35}
               color="white"
               onPress={() => {
                 this.setState({ life: !this.state.life })
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   },
   opacityl: {
     position: 'absolute',
-    width: '50%',
+    width: '40%',
     height: '100%',
     zIndex: 1,
     //backgroundColor: 'red',
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   opacityr: {
     position: 'absolute',
-    width: '50%',
+    width: '40%',
     height: '100%',
     zIndex: 1,
     //backgroundColor: 'blue',
