@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { View, Dimensions, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
+import { Dimensions, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
 
 class Counter extends PureComponent {
   state = {
@@ -8,7 +8,7 @@ class Counter extends PureComponent {
 
   render() {
     const { width } = Dimensions.get('screen')
-
+    console.log(width)
     return (
       <ImageBackground
         source={this.props.img}
@@ -20,25 +20,19 @@ class Counter extends PureComponent {
             onPress={() => this.props.downlife()}
             hitSlop={{ top: 10, bottom: 10, left: 0, right: width / 2 }}
           >
-            <View>
-              <Text
-                style={[
-                  styles.text,
-                  {
-                    color: 'lightgreen',
-                    transform: this.props.up ? [{ rotate: '180deg' }] : []
-                  }
-                ]}
-              >
-                {this.props.life}
-              </Text>
-            </View>
+            <Text
+              style={{
+                fontSize: width / 2,
+                color: 'lightgreen',
+                transform: this.props.up ? [{ rotate: '180deg' }] : []
+              }}
+            >
+              {this.props.life}
+            </Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity onPress={() => this.props.poisonchange(true)}>
-            <View>
-              <Text style={[styles.text, { color: 'magenta' }]}>{this.props.poison}</Text>
-            </View>
+            <Text style={{ fontSize: width / 2, color: 'magenta' }}>{this.props.poison}</Text>
           </TouchableOpacity>
         )}
       </ImageBackground>
@@ -47,9 +41,6 @@ class Counter extends PureComponent {
 }
 
 const styles = StyleSheet.create({
-  text: {
-    fontSize: 80
-  },
   textsmall: { fontSize: 25 },
   lines: {
     borderWidth: 3,
@@ -58,7 +49,8 @@ const styles = StyleSheet.create({
   opacity: {
     alignItems: 'center',
     width: '100%',
-    height: '100%'
+    height: '100%',
+    justifyContent: 'center'
   },
   background: {
     width: '100%',
