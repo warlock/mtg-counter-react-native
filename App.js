@@ -9,11 +9,12 @@ import {
   Image,
   Linking,
   AsyncStorage,
-  SafeAreaView
+  SafeAreaView,
+  Font
 } from 'react-native'
 import Counter from './components/Counter'
 import { DangerZone } from 'expo'
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import dayjs from 'dayjs'
 const { height, width } = Dimensions.get('screen')
 const { Localization } = DangerZone
@@ -216,9 +217,29 @@ export default class App extends Component {
                   {this.state.timer}
                 </Text>
               ) : (
-                <Ionicons name="clockcircle" size={32} color="green" />
+                <MaterialCommunityIcons
+                  name="clock-outline"
+                  size={32}
+                  color="white"
+                  onPress={() => {
+                    this.eventTimer()
+                  }}
+                />
               )}
-              <Ionicons name="md-checkmark-circle" size={32} color="green" />
+              <TouchableOpacity
+                onPress={() => {
+                  this.resetGame()
+                }}
+              >
+                <MaterialCommunityIcons name="reload" size={32} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  this.throwDice()
+                }}
+              >
+                <MaterialCommunityIcons name="dice-3" size={32} color="white" />
+              </TouchableOpacity>
             </View>
             <Counter
               n_life={this.state.n_life}
@@ -237,35 +258,6 @@ export default class App extends Component {
               img={require('./assets/dracvermell.jpg')}
             />
           </View>
-          <View style={[styles.buttons, { width }]}>
-            <TouchableOpacity
-              onPress={() => {
-                this.resetGame()
-              }}
-            >
-              <View style={styles.fullsize}>
-                <Text style={styles.textsmall}>{this.state.n_restart}</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                this.throwDice()
-              }}
-            >
-              <View style={styles.fullsize}>
-                <Text style={styles.textsmall}>{this.state.n_dice}</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                this.naips()
-              }}
-            >
-              <View style={styles.fullsize}>
-                <Image source={require('./assets/naips.png')} resizeMode="contain" style={{ width: '80%' }} />
-              </View>
-            </TouchableOpacity>
-          </View>
         </View>
       </SafeAreaView>
     )
@@ -274,7 +266,7 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
   back: {
-    backgroundColor: 'yellow',
+    backgroundColor: 'grey',
     height,
     width,
     alignItems: 'center',
@@ -285,7 +277,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   container: {
-    backgroundColor: 'blue',
+    backgroundColor: 'black',
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch'
