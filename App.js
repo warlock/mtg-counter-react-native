@@ -33,15 +33,6 @@ export default class App extends Component {
         }
       ]
     }
-    this.resetGame.bind(this)
-    this.throwDice.bind(this)
-    this.naips.bind(this)
-    this.startTimer.bind(this)
-    this.stopTimer.bind(this)
-    this.eventTimer.bind(this)
-    this.poisonchange.bind(this)
-    this.uplife.bind(this)
-    this.downlife.bind(this)
   }
 
   resetGame() {

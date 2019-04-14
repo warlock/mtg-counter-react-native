@@ -18,7 +18,7 @@ class Counter extends PureComponent {
           <TouchableOpacity
             style={styles.opacity}
             onPress={() => this.props.downlife()}
-            hitSlop={{ top: 10, bottom: 10, left: 0, right: width / 2 }}
+            hitSlop={{ top: 0, bottom: 0, left: 0, right: width / 2 }}
           >
             <Text
               style={{
