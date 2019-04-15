@@ -14,73 +14,56 @@ class Counter extends PureComponent {
         source={this.props.img}
         style={[styles.background, { opacity: this.props.life < 1 || this.props.poison > 9 ? 0.4 : 1 }]}
       >
-        {this.state.life ? (
-          <View style={styles.container}>
-            <Entypo
-              style={{
-                position: 'absolute',
-                zIndex: 3,
-                right: this.props.up ? 20 : null,
-                top: this.props.up ? 20 : null,
-                left: this.props.up ? null : 20,
-                bottom: this.props.up ? null : 20,
-                transform: this.props.up ? [{ rotate: '180deg' }] : []
-              }}
-              name={this.state.life ? 'drop' : 'heart'}
-              size={35}
-              color="white"
-              onPress={() => {
-                this.setState({ life: !this.state.life })
-              }}
-            />
-            <TouchableOpacity style={styles.opacityl} onPress={() => this.props.downlife()} />
-            <TouchableOpacity style={styles.opacityr} onPress={() => this.props.uplife()} />
-            <Text
-              style={{
-                position: 'absolute',
-                zIndex: 0,
-                fontSize: width / 2,
-                color: 'lightgreen',
-                transform: this.props.up ? [{ rotate: '180deg' }] : []
-              }}
-            >
-              {this.props.life}
-            </Text>
-          </View>
-        ) : (
-          <View style={styles.container}>
-            <Entypo
-              style={{
-                position: 'absolute',
-                zIndex: 3,
-                right: this.props.up ? 20 : null,
-                top: this.props.up ? 20 : null,
-                left: this.props.up ? null : 20,
-                bottom: this.props.up ? null : 20,
-                transform: this.props.up ? [{ rotate: '180deg' }] : []
-              }}
-              name={this.state.life ? 'drop' : 'heart'}
-              size={35}
-              color="white"
-              onPress={() => {
-                this.setState({ life: !this.state.life })
-              }}
-            />
-            <TouchableOpacity style={styles.opacityl} onPress={() => this.props.downpoison()} />
-            <TouchableOpacity style={styles.opacityr} onPress={() => this.props.uppoison()} />
-            <Text
-              style={{
-                position: 'absolute',
-                zIndex: 0,
-                fontSize: width / 2,
-                color: 'magenta',
-                transform: this.props.up ? [{ rotate: '180deg' }] : []
-              }}
-            >
-              {this.props.poison}
-            </Text>
-          </View>
-        )}
+        <View style={styles.container}>
+          <Entypo
+            style={{
+              position: 'absolute',
+              zIndex: 3,
+              right: this.props.up ? 20 : null,
+              top: this.props.up ? 20 : null,
+              left: this.props.up ? null : 20,
+              bottom: this.props.up ? null : 20,
+              transform: this.props.up ? [{ rotate: '180deg' }] : []
+            }}
+            name={this.state.life ? 'drop' : 'heart'}
+            size={35}
+            color="white"
+            onPress={() => {
+              this.setState({ life: !this.state.life })
+            }}
+          />
+          <TouchableOpacity
+            style={styles.opacityl}
+            onPress={() => {
+              if (this.state.life) {
+                this.props.downlife()
+              } else {
+                this.props.downpoison()
+              }
+            }}
+          />
+          <TouchableOpacity
+            style={styles.opacityr}
+            onPress={() => {
+              if (this.state.life) {
+                this.props.uplife()
+              } else {
+                this.props.uppoison()
+              }
+            }}
+          />
+          <Text
+            style={{
+              position: 'absolute',
+              zIndex: 0,
+              fontSize: width / 2,
+              color: this.state.life ? 'lightgreen' : 'magenta',
+              transform: this.props.up ? [{ rotate: '180deg' }] : []
+            }}
+          >
+            {this.state.life ? this.props.life : this.props.poison}
+          </Text>
+        </View>
       </ImageBackground>
     )
   }
