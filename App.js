@@ -69,7 +69,8 @@ export default class App extends Component {
     this.seconds = 50 * 60 * 1000
     this.setState({ viewtimer: true })
     this.timerint = setInterval(() => {
-      this.setState({ timer: dayjs(this.seconds).format('mm:ss') }).log(this.seconds)
+      const timer = dayjs(this.seconds).format('mm:ss')
+      this.setState({ timer })
       if (this.seconds === 0) {
         clearInterval(this.timerint)
         this.timerint = null
@@ -79,14 +80,17 @@ export default class App extends Component {
 
   stopTimer() {
     clearInterval(this.timerint)
-    this.timerint = null
-    this.setState({
-      timer: `[${this.state.timer}]`
-    })
+    if (this.timerint !== null) {
+      this.timerint = null
+
+      this.setState({
+        timer: `[${this.state.timer}]`
+      })
+    }
   }
 
   eventTimer() {
-    if (this.timerint) this.stopTimer()
+    if (this.timerint !== null) this.stopTimer()
     else this.startTimer()
   }
 
