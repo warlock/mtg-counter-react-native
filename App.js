@@ -33,6 +33,9 @@ export default class App extends Component {
         }
       ]
     }
+    this.stopTimer = this.stopTimer.bind(this)
+    this.startTimer = this.startTimer.bind(this)
+    this.eventTimer = this.eventTimer.bind(this)
   }
 
   resetGame() {
