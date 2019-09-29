@@ -6,15 +6,17 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "clean": "expo r -c"
   },
   "dependencies": {
-    "dayjs": "^1.7.7",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
-    "expo": "^32.0.0",
-    "react": "16.5.0"
+    "dayjs": "^1.8.16",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",
+    "expo": "^35.0.0",
+    "react": "16.9.0"
   },
   "devDependencies": {
-    "babel-preset-expo": "^5.1.1"
+    "babel-preset-expo": "^7.0.0",
+    "jest-expo": "^35.0.0"
   }
 }

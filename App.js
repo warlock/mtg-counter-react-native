@@ -1,25 +1,17 @@
 import React, { Component } from 'react'
-import {
-  StyleSheet,
-  Alert,
-  View,
-  Dimensions,
-  Text,
-  TouchableOpacity,
-  Image,
-  Linking,
-  SafeAreaView,
-  Font
-} from 'react-native'
+import { StyleSheet, View, Dimensions, Text, TouchableOpacity, Linking, SafeAreaView } from 'react-native'
 import Counter from './components/Counter'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import dayjs from 'dayjs'
 const { height, width } = Dimensions.get('screen')
+const sleep = secs => new Promise(resolve => setTimeout(resolve, secs * 1000))
 
 export default class App extends Component {
   constructor() {
     super()
     this.state = {
+      diceNum: '3',
+      diceColor: 'white',
       viewtimer: false,
       timer: '50:00',
       players: [
@@ -57,8 +49,24 @@ export default class App extends Component {
     })
   }
 
-  throwDice() {
-    Alert.alert(`${Math.floor(Math.random() * 6) + 1}`)
+  async throwDice() {
+    this.setState({
+      diceNum: '1',
+      diceColor: 'grey'
+    })
+    await sleep(0.3)
+    this.setState({
+      diceNum: '3'
+    })
+    await sleep(0.3)
+    this.setState({
+      diceNum: '5'
+    })
+    await sleep(0.3)
+    this.setState({
+      diceColor: 'white',
+      diceNum: `${Math.floor(Math.random() * 6) + 1}`
+    })
   }
 
   naips() {
@@ -144,26 +152,28 @@ export default class App extends Component {
               img={require('./assets/draclila.jpg')}
             />
             <View style={[styles.buttons, { width }]}>
-              {this.state.viewtimer ? (
-                <Text
-                  style={styles.textsmall}
-                  onPress={() => {
-                    this.eventTimer()
-                  }}
-                >
-                  {this.state.timer}
-                </Text>
-              ) : (
-                <MaterialCommunityIcons
-                  name="clock-outline"
-                  size={32}
-                  color="white"
-                  onPress={() => {
-                    this.eventTimer()
-                  }}
-                />
-              )}
               <TouchableOpacity
+                style={{
+                  width: width / 3,
+                  alignItems: 'center',
+                  justifyContent: 'space-around'
+                }}
+                onPress={() => {
+                  this.eventTimer()
+                }}
+              >
+                {this.state.viewtimer ? (
+                  <Text style={styles.textsmall}>{this.state.timer}</Text>
+                ) : (
+                  <MaterialCommunityIcons name="clock-outline" size={32} color="white" />
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  width: width / 3,
+                  alignItems: 'center',
+                  justifyContent: 'space-around'
+                }}
                 onPress={() => {
                   this.resetGame()
                 }}
@@ -171,11 +181,16 @@ export default class App extends Component {
                 <MaterialCommunityIcons name="reload" size={32} color="white" />
               </TouchableOpacity>
               <TouchableOpacity
+                style={{
+                  width: width / 3,
+                  alignItems: 'center',
+                  justifyContent: 'space-around'
+                }}
                 onPress={() => {
                   this.throwDice()
                 }}
               >
-                <MaterialCommunityIcons name="dice-3" size={32} color="white" />
+                <MaterialCommunityIcons name={`dice-${this.state.diceNum}`} size={32} color={this.state.diceColor} />
               </TouchableOpacity>
             </View>
             <Counter
