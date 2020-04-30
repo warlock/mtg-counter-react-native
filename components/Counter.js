@@ -1,72 +1,74 @@
-import React, { PureComponent } from 'react'
-import { View, Dimensions, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
+import React, { useState } from 'react'
+import {
+  View,
+  Dimensions,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground
+} from 'react-native'
 import { Entypo } from '@expo/vector-icons'
 
-class Counter extends PureComponent {
-  state = {
-    life: true
-  }
-
-  render() {
-    const { width } = Dimensions.get('screen')
-    return (
-      <ImageBackground
-        source={this.props.img}
-        style={[styles.background, { opacity: this.props.life < 1 || this.props.poison > 9 ? 0.4 : 1 }]}
-      >
-        <View style={styles.container}>
-          <Entypo
-            style={{
-              position: 'absolute',
-              zIndex: 3,
-              right: this.props.up ? 20 : null,
-              top: this.props.up ? 20 : null,
-              left: this.props.up ? null : 20,
-              bottom: this.props.up ? null : 20,
-              transform: this.props.up ? [{ rotate: '180deg' }] : []
-            }}
-            name={this.state.life ? 'drop' : 'heart'}
-            size={35}
-            color="white"
-            onPress={() => {
-              this.setState({ life: !this.state.life })
-            }}
-          />
-          <TouchableOpacity
-            style={styles.opacityl}
-            onPress={() => {
-              if (this.state.life) {
-                this.props.downlife()
-              } else {
-                this.props.downpoison()
-              }
-            }}
-          />
-          <TouchableOpacity
-            style={styles.opacityr}
-            onPress={() => {
-              if (this.state.life) {
-                this.props.uplife()
-              } else {
-                this.props.uppoison()
-              }
-            }}
-          />
-          <Text
-            style={{
-              position: 'absolute',
-              zIndex: 0,
-              fontSize: width / 2,
-              color: this.state.life ? 'lightgreen' : 'magenta',
-              transform: this.props.up ? [{ rotate: '180deg' }] : []
-            }}
-          >
-            {this.state.life ? this.props.life : this.props.poison}
-          </Text>
-        </View>
-      </ImageBackground>
-    )
-  }
+export default ({ img, life, poison, downlife, downpoison, uplife, up }) => {
+  const [switcher, setSwitcher] = useState(true)
+  const { width } = Dimensions.get('screen')
+  return (
+    <ImageBackground
+      source={img}
+      style={[styles.background, { opacity: life < 1 || poison > 9 ? 0.4 : 1 }]}
+    >
+      <View style={styles.container}>
+        <Entypo
+          style={{
+            position: 'absolute',
+            zIndex: 3,
+            right: up ? 20 : null,
+            top: up ? 20 : null,
+            left: up ? null : 20,
+            bottom: up ? null : 20,
+            transform: up ? [{ rotate: '180deg' }] : []
+          }}
+          name={switcher ? 'drop' : 'heart'}
+          size={35}
+          color="white"
+          onPress={() => {
+            setSwitcher(!switcher)
+          }}
+        />
+        <TouchableOpacity
+          style={styles.opacityl}
+          onPress={() => {
+            if (switcher) {
+              downlife()
+            } else {
+              downpoison()
+            }
+          }}
+        />
+        <TouchableOpacity
+          style={styles.opacityr}
+          onPress={() => {
+            if (switcher) {
+              uplife()
+            } else {
+              uppoison()
+            }
+          }}
+        />
+        <Text
+          style={{
+            position: 'absolute',
+            zIndex: 0,
+            fontSize: width / 2,
+            color: switcher ? 'lightgreen' : 'magenta',
+            transform: up ? [{ rotate: '180deg' }] : []
+          }}
+        >
+          {switcher ? life : poison}
+        </Text>
+      </View>
+    </ImageBackground>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -105,5 +107,3 @@ const styles = StyleSheet.create({
     backgroundColor: 'red'
   }
 })
-
-export default Counter
