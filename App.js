@@ -5,7 +5,6 @@ import {
   Dimensions,
   Text,
   TouchableOpacity,
-  Linking,
   SafeAreaView
 } from 'react-native'
 import Counter from './components/Counter'
@@ -61,10 +60,6 @@ export default () => {
       number,
       color: 'white'
     })
-  }
-
-  const naips = () => {
-    Linking.openURL('http://www.naipsbcn.com/')
   }
 
   const startTimer = () => {
