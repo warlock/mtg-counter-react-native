@@ -102,7 +102,7 @@ export default () => {
           }
           life={player1.life}
           poison={player1.poison}
-          img={require('./assets/draclila.jpg')}
+          img={require('./assets/red.jpg')}
         />
         <View style={[styles.buttons, { width }]}>
           <TouchableOpacity
@@ -170,7 +170,7 @@ export default () => {
           }
           life={player2.life}
           poison={player2.poison}
-          img={require('./assets/dracvermell.jpg')}
+          img={require('./assets/blue.jpg')}
         />
       </View>
     </SafeAreaView>

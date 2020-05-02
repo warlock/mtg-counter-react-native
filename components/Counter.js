@@ -23,17 +23,21 @@ export default ({
   return (
     <ImageBackground
       source={img}
-      style={[styles.background, { opacity: life < 1 || poison > 9 ? 0.4 : 1 }]}
+      style={[
+        styles.background,
+        {
+          opacity: life < 1 || poison > 9 ? 0.4 : 1,
+          transform: up ? [{ rotate: '180deg' }] : null
+        }
+      ]}
     >
       <Entypo
         style={{
           position: 'absolute',
           zIndex: 3,
-          right: up ? 15 : null,
-          top: up ? 15 : null,
-          left: up ? null : 15,
-          bottom: up ? null : 15,
-          transform: up ? [{ rotate: '180deg' }] : []
+
+          left: 15,
+          bottom: 15
         }}
         name={switcher ? 'drop' : 'heart'}
         size={35}
@@ -41,7 +45,7 @@ export default ({
         onPress={() => setSwitcher(!switcher)}
       />
       <TouchableOpacity
-        style={up ? styles.opacityl : styles.opacityr}
+        style={styles.opacityr}
         onPress={() => {
           if (switcher) {
             downlife()
@@ -54,8 +58,7 @@ export default ({
           style={{
             position: 'absolute',
             zIndex: 3,
-            alignSelf: 'center',
-            transform: up ? [{ rotate: '180deg' }] : []
+            alignSelf: 'center'
           }}
           name={switcher ? 'minuscircleo' : 'pluscircleo'}
           size={35}
@@ -63,7 +66,7 @@ export default ({
         />
       </TouchableOpacity>
       <TouchableOpacity
-        style={up ? styles.opacityr : styles.opacityl}
+        style={styles.opacityl}
         onPress={() => {
           if (switcher) {
             uplife()
@@ -76,11 +79,10 @@ export default ({
           style={{
             position: 'absolute',
             zIndex: 3,
-            alignSelf: 'center',
-            transform: up ? [{ rotate: '180deg' }] : []
+            alignSelf: 'center'
           }}
           name={switcher ? 'pluscircleo' : 'minuscircleo'}
-          size={35}
+          size={38}
           color="white"
         />
       </TouchableOpacity>
@@ -90,7 +92,6 @@ export default ({
           zIndex: 0,
           fontSize: width / 3,
           color: switcher ? 'white' : 'magenta',
-          transform: up ? [{ rotate: '180deg' }] : [],
           textShadowColor: 'rgba(0, 0, 0, 0.75)',
           textShadowOffset: { width: 5, height: 5 },
           textShadowRadius: 10
