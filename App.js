@@ -82,8 +82,6 @@ export default () => {
     })
   }
 
-  console.log(height / 2 - 23)
-
   return (
     <SafeAreaView style={styles.background}>
       <StatusBar backgroundColor="black" barStyle="light-content" />
@@ -182,7 +180,6 @@ export default () => {
 const styles = StyleSheet.create({
   background: {
     backgroundColor: 'black',
-    //    alignItems: 'center',
     flex: 1,
     height: '100%'
   },
