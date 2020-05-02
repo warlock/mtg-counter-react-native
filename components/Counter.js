@@ -61,7 +61,10 @@ export default ({ img, life, poison, downlife, downpoison, uplife, up }) => {
             zIndex: 0,
             fontSize: width / 2,
             color: switcher ? 'lightgreen' : 'magenta',
-            transform: up ? [{ rotate: '180deg' }] : []
+            transform: up ? [{ rotate: '180deg' }] : [],
+            textShadowColor: 'rgba(0, 0, 0, 0.75)',
+            textShadowOffset: { width: 5, height: 5 },
+            textShadowRadius: 10
           }}
         >
           {switcher ? life : poison}

@@ -83,7 +83,6 @@ export default () => {
   }
 
   const startTimer = () => {
-    //setSeconds(10000)
     setViewTimer(true)
     setIsActive(true)
   }
