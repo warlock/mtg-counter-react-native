@@ -82,10 +82,12 @@ export default () => {
     })
   }
 
+  console.log(height / 2 - 23)
+
   return (
-    <SafeAreaView style={styles.back}>
+    <SafeAreaView style={styles.background}>
       <StatusBar backgroundColor="black" barStyle="light-content" />
-      <View style={styles.container}>
+      <View style={styles.inview}>
         <Counter
           up={true}
           uplife={() =>
@@ -104,7 +106,7 @@ export default () => {
           poison={player1.poison}
           img={require('./assets/red.jpg')}
         />
-        <View style={[styles.buttons, { width }]}>
+        <View style={[styles.buttons]}>
           <TouchableOpacity
             style={{
               width: width / 3,
@@ -178,31 +180,27 @@ export default () => {
 }
 
 const styles = StyleSheet.create({
-  back: {
+  background: {
     backgroundColor: 'black',
-    height,
-    width,
-    alignItems: 'center',
-    flexDirection: 'row'
-  },
-  safearea: {
-    //height: '100%',
-    //width: '100%'
-  },
-  container: {
-    backgroundColor: 'black',
+    //    alignItems: 'center',
     flex: 1,
-    flexDirection: 'column',
-    alignItems: 'stretch'
+    height: '100%'
   },
   buttons: {
     alignItems: 'center',
     justifyContent: 'space-around',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    height: 46
   },
-  fullsize: {
-    width: width / 3,
-    alignItems: 'center'
+  inview: {
+    height: '100%',
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    justifyContent: 'space-evenly'
   },
-  textsmall: { fontSize: 25, color: 'white' }
+  textsmall: {
+    fontSize: 25,
+    color: 'white'
+  }
 })

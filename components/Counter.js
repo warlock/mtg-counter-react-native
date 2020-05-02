@@ -24,8 +24,10 @@ export default ({
     <ImageBackground
       source={img}
       style={[
-        styles.background,
         {
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
           opacity: life < 1 || poison > 9 ? 0.4 : 1,
           transform: up ? [{ rotate: '180deg' }] : null
         }
@@ -35,7 +37,6 @@ export default ({
         style={{
           position: 'absolute',
           zIndex: 3,
-
           left: 15,
           bottom: 15
         }}
@@ -105,10 +106,6 @@ export default ({
 
 const styles = StyleSheet.create({
   textsmall: { fontSize: 25 },
-  lines: {
-    borderWidth: 3,
-    borderColor: 'red'
-  },
   container: {
     position: 'absolute',
     alignItems: 'center',
@@ -139,14 +136,5 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: { width: 5, height: 5 },
     textShadowRadius: 10
-  },
-  background: {
-    justifyContent: 'center',
-    //width: '100%',
-    //height: '100%',
-    //height: '45%', // AQUEST ES EL BO
-    height: height / 2 - 50,
-    alignItems: 'center',
-    backgroundColor: 'red'
   }
 })
