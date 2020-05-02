@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   StyleSheet,
   View,
@@ -12,19 +12,41 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import dayjs from 'dayjs'
 const { height, width } = Dimensions.get('screen')
 const sleep = secs => new Promise(resolve => setTimeout(resolve, secs * 1000))
-
+const MAX_TIME = 50 * 60 * 1000
 export default () => {
   const [dice, setDice] = useState({ number: 3, color: 'white' })
   const [viewtimer, setViewTimer] = useState(false)
+  const [isActive, setIsActive] = useState(false)
   const [timer, setTimer] = useState('50:00')
-  const [seconds, setSeconds] = useState(50 * 60 * 1000)
+  const [seconds, setSeconds] = useState(MAX_TIME)
   const [player1, setPlayer1] = useState({ life: 20, poison: 0 })
   const [player2, setPlayer2] = useState({ life: 20, poison: 0 })
-  var interval = null
+
+  useEffect(() => {
+    let interval = null
+    if (isActive) {
+      interval = setInterval(() => {
+        if (seconds === 0) {
+          setIsActive(false)
+        } else {
+          setSeconds(seconds - 1000)
+          setTimer(dayjs(seconds).format('mm:ss'))
+        }
+      }, 1000)
+    } else if (!isActive && seconds !== MAX_TIME) {
+      setTimer(`[${dayjs(seconds).format('mm:ss')}]`)
+      clearInterval(interval)
+    }
+    //dayjs(seconds).format('mm:ss')
+    //setTimer(`[${dayjs(seconds).format('mm:ss')}]`)
+    return () => clearInterval(interval)
+  }, [seconds, isActive])
 
   const resetGame = () => {
-    clearInterval(interval)
-    interval = null
+    setIsActive(false)
+    setSeconds(MAX_TIME)
+    setViewTimer(false)
+    setTimer('50:00')
 
     setPlayer1({
       life: 20,
@@ -35,8 +57,6 @@ export default () => {
       life: 20,
       poison: 0
     })
-
-    setTimer('50:00')
   }
 
   const throwDice = async () => {
@@ -63,32 +83,13 @@ export default () => {
   }
 
   const startTimer = () => {
-    setSeconds(50 * 60 * 1000)
+    //setSeconds(10000)
     setViewTimer(true)
-    interval = setInterval(() => {
-      const timer = dayjs(seconds).format('mm:ss')
-      setTimer(timer)
-      if (seconds === 0) {
-        clearInterval(interval)
-        interval = null
-      } else {
-        setSeconds(seconds - 1000)
-      }
-    }, 1000)
+    setIsActive(true)
   }
 
   const stopTimer = () => {
-    clearInterval(interval)
-    if (interval !== null) {
-      interval = null
-      const timer = dayjs(seconds).format('mm:ss')
-      setTimer(`[${timer}]`)
-    }
-  }
-
-  const eventTimer = () => {
-    if (interval !== null) stopTimer()
-    else startTimer()
+    setIsActive(false)
   }
 
   return (
@@ -121,7 +122,8 @@ export default () => {
                 justifyContent: 'space-around'
               }}
               onPress={() => {
-                eventTimer()
+                if (isActive) stopTimer()
+                else startTimer()
               }}
             >
               {viewtimer ? (
