@@ -1,240 +1,190 @@
-import React, { Component } from 'react'
-import { StyleSheet, Alert, View, Dimensions, Text, TouchableOpacity, Image, Linking, AsyncStorage } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  SafeAreaView
+} from 'react-native'
 import Counter from './components/Counter'
-import { DangerZone } from 'expo'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 import dayjs from 'dayjs'
 const { height, width } = Dimensions.get('screen')
-const { Localization } = DangerZone
+const sleep = secs => new Promise(resolve => setTimeout(resolve, secs * 1000))
+const MAX_TIME = 50 * 60 * 1000
+export default () => {
+  const [dice, setDice] = useState({ number: 3, color: 'white' })
+  const [viewtimer, setViewTimer] = useState(false)
+  const [isActive, setIsActive] = useState(false)
+  const [timer, setTimer] = useState('50:00')
+  const [seconds, setSeconds] = useState(MAX_TIME)
+  const [player1, setPlayer1] = useState({ life: 20, poison: 0 })
+  const [player2, setPlayer2] = useState({ life: 20, poison: 0 })
 
-export default class App extends Component {
-
-  constructor () {
-    super()
-    this.state = {
-      viewtimer: false,
-      timer: '50:00',
-      n_restart: 'Restart',
-      n_dice: 'Throw a dice',
-      n_timer: 'Start timer',
-      n_changelang: 'Change Language',
-      n_exit: 'Exit',
-      n_life: 'life',
-      n_poison: 'poison',
-      language: 'en',
-      players: [
-        {
-          life: 20,
-          poison: 0
-        },
-        {
-          life: 20,
-          poison: 0
+  useEffect(() => {
+    let interval = null
+    if (isActive) {
+      interval = setInterval(() => {
+        if (seconds === 0) {
+          setIsActive(false)
+        } else {
+          setSeconds(seconds - 1000)
+          setTimer(dayjs(seconds).format('mm:ss'))
         }
-      ]
+      }, 1000)
+    } else if (!isActive && seconds !== MAX_TIME) {
+      setTimer(`[${dayjs(seconds).format('mm:ss')}]`)
+      clearInterval(interval)
     }
-    this.resetGame.bind(this)
-    this.throwDice.bind(this)
-    this.naips.bind(this)
-    this.startTimer.bind(this)
-    this.stopTimer.bind(this)
-    this.eventTimer.bind(this)
-    this.changeLang.bind(this)
-    this.selectLang.bind(this)
+    //dayjs(seconds).format('mm:ss')
+    //setTimer(`[${dayjs(seconds).format('mm:ss')}]`)
+    return () => clearInterval(interval)
+  }, [seconds, isActive])
 
-    this.poisonchange.bind(this)
-    this.uplife.bind(this)
-    this.downlife.bind(this)
-  }
+  const resetGame = () => {
+    setIsActive(false)
+    setSeconds(MAX_TIME)
+    setViewTimer(false)
+    setTimer('50:00')
 
-  async componentWillMount () {
-    var lang = await AsyncStorage.getItem('@lang')
-    if (!lang) lang = Localization.locale 
-    this.changeLang(lang)
-  }
+    setPlayer1({
+      life: 20,
+      poison: 0
+    })
 
-  selectLang () {
-    Alert.alert(
-      this.state.changelang,
-      'hola',
-      [
-        {text: 'English', onPress: () => this.changeLang('en')},
-        {text: 'Español', onPress: () => this.changeLang('es-ES')},
-        {text: 'Català', onPress: () => this.changeLang('ca-ES')},
-        {text: 'Cancel', style: 'cancel'}
-      ]
-    )
-  }
-
-  changeLang (locale) {
-    if (locale === 'ca-ES') {
-      this.setState({
-        n_language: 'cat',
-        n_restart: 'Reiniciar joc',
-        n_dice: 'Llençar dau',
-        n_timer: 'Iniciar temporitzador',
-        n_changelang: 'Canvia idioma',
-        n_exit: 'Sortir',
-        n_life: 'vida',
-        n_poison: 'verí'
-      })
-      AsyncStorage.setItem('@lang', 'ca-ES')
-    } else if (locale.includes('es-')) {
-      this.setState({
-        n_language: 'es',
-        n_restart: 'Reiniciar juego',
-        n_dice: 'Lanzar dado',
-        n_timer: 'Iniciar temporizador',
-        n_changelang: 'Cambiar idioma',
-        n_exit: 'Salir',
-        n_life: 'vida',
-        n_poison: 'veneno'
-      })
-      AsyncStorage.setItem('@lang', 'es-ES')
-    } else {
-      this.setState({
-        n_language: 'en',
-        n_restart: 'Restart game',
-        n_dice: 'Throw a dice',
-        n_timer: 'Start timer',
-        n_changelang: 'Change Language',
-        n_exit: 'Exit',
-        n_life: 'life',
-        n_poison: 'poison'
-      })
-      AsyncStorage.setItem('@lang', 'en')
-    }
-  }
-
-  resetGame () {
-    clearInterval(this.timerint)
-    this.timerint = null
-    this.setState({
-      viewtimer: false,
-      timer: '50:00',
-      players: [
-        {
-          life: 20,
-          poison: 0
-        },
-        {
-          life: 20,
-          poison: 0
-        }
-      ]
+    setPlayer2({
+      life: 20,
+      poison: 0
     })
   }
 
-  throwDice () {
-    Alert.alert('Resultado del dado:', `${Math.floor(Math.random() * 6) + 1}`)
-  }
-
-  naips () {
-    Linking.openURL('http://www.naipsbcn.com/')
-  }
-
-  startTimer () {
-    console.log('start timmer')
-    this.seconds = 50*60*1000
-    this.setState({ viewtimer: true })
-    this.timerint = setInterval(() => {
-      this.setState({ timer: dayjs(this.seconds).format('mm:ss') })
-      if (this.seconds === 0) {
-        clearInterval(this.timerint)
-        this.timerint = null
-      }  else this.seconds = this.seconds - 1000
-    }, 1000)
-  }
-
-  stopTimer () {
-    console.log('stop timmer')
-    clearInterval(this.timerint)
-    this.timerint = null
-    this.setState({
-      timer: `[${this.state.timer}]`
+  const throwDice = async () => {
+    setDice({
+      number: '1',
+      color: 'grey'
+    })
+    await sleep(0.3)
+    setDice({
+      number: '3',
+      color: 'grey'
+    })
+    await sleep(0.3)
+    setDice({
+      number: '5',
+      color: 'grey'
+    })
+    await sleep(0.3)
+    const number = Math.floor(Math.random() * 6) + 1
+    setDice({
+      number,
+      color: 'white'
     })
   }
 
-  eventTimer () {
-    if (this.timerint) this.stopTimer()
-    else this.startTimer()
+  const startTimer = () => {
+    setViewTimer(true)
+    setIsActive(true)
   }
 
-  uplife(player, num) {
-    const players = [...this.state.players]
-    players[player].life = players[player].life + num
-    this.setState({ players })
+  const stopTimer = () => {
+    setIsActive(false)
   }
 
-  downlife(player) {
-    const players = [...this.state.players]
-    players[player].life = players[player].life - 1
-    this.setState({ players })
-  }
-
-  poisonchange (player, action) {
-    const players = [...this.state.players]
-    players[player].poison = action? players[player].poison + 1 : players[player].poison - 1
-    this.setState(players)
-  }
-
-  render() {
-    return (
-      <View style={styles.back}>
-        <View style={styles.safearea}>
+  return (
+    <SafeAreaView style={styles.back}>
+      <View style={styles.safearea}>
+        <View style={styles.container}>
+          <Counter
+            up={true}
+            uplife={() => {
+              setPlayer1({ life: player1.life + 1, poison: player1.poison })
+            }}
+            downlife={() => {
+              setPlayer1({ life: player1.life - 1, poison: player1.poison })
+            }}
+            uppoison={() => {
+              setPlayer1({ life: player1.life, poison: player1.poison + 1 })
+            }}
+            downpoison={() => {
+              setPlayer1({ life: player1.life, poison: player1.poison - 1 })
+            }}
+            life={player1.life}
+            poison={player1.poison}
+            img={require('./assets/draclila.jpg')}
+          />
           <View style={[styles.buttons, { width }]}>
-            {this.state.viewtimer?
-              <Text style={styles.textsmall} onPress={() => { this.eventTimer() }}>{this.state.timer}</Text>
-              :
-              <Text style={styles.textsmall} onPress={() => { this.eventTimer() }}>{this.state.n_timer}</Text>
-            }
-            <Text style={styles.textsmall} onPress={() => { this.selectLang() }}>{this.state.n_changelang}</Text>
-          </View>
-            {this.state.loading? null:
-              <View style={[styles.container, { height, width }]}>
-                <Counter
-                  n_life={this.state.n_life}
-                  n_poison={this.state.n_poison}
-                  uplife={(num) => { this.uplife(0, num) }}
-                  downlife={() => { this.downlife(0) }}
-                  poisonchange={action => { this.poisonchange(0, action) }}
-                  life={this.state.players[0].life}
-                  poison={this.state.players[0].poison}
-                  img={require('./assets/draclila.jpg')}
+            <TouchableOpacity
+              style={{
+                width: width / 3,
+                alignItems: 'center',
+                justifyContent: 'space-around'
+              }}
+              onPress={() => {
+                if (isActive) stopTimer()
+                else startTimer()
+              }}
+            >
+              {viewtimer ? (
+                <Text style={styles.textsmall}>{timer}</Text>
+              ) : (
+                <MaterialCommunityIcons
+                  name="clock-outline"
+                  size={32}
+                  color="white"
                 />
-                <Counter
-                  n_life={this.state.n_life}
-                  n_poison={this.state.n_poison}
-                  uplife={(num) => { this.uplife(1, num) }}
-                  downlife={() => { this.downlife(1) }}
-                  poisonchange={action => { this.poisonchange(1, action) }}
-                  life={this.state.players[1].life}
-                  poison={this.state.players[1].poison}
-                  img={require('./assets/dracvermell.jpg')}
-                />
-              </View>
-            }
-
-          <View style={[styles.buttons, { width }]}>
-            <TouchableOpacity onPress={() => { this.resetGame() }}>
-              <View style={styles.fullsize}>
-                <Text style={styles.textsmall}>{this.state.n_restart}</Text>
-              </View>
+              )}
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { this.throwDice() }}>
-              <View style={styles.fullsize}>
-                <Text style={styles.textsmall}>{this.state.n_dice}</Text>
-              </View>          
+            <TouchableOpacity
+              style={{
+                width: width / 3,
+                alignItems: 'center',
+                justifyContent: 'space-around'
+              }}
+              onPress={() => {
+                resetGame()
+              }}
+            >
+              <MaterialCommunityIcons name="reload" size={32} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { this.naips() }}>
-              <View style={styles.fullsize}>
-                <Image source={require('./assets/naips.png')} resizeMode='contain' style={{ width: '80%' }} />
-              </View>
+            <TouchableOpacity
+              style={{
+                width: width / 3,
+                alignItems: 'center',
+                justifyContent: 'space-around'
+              }}
+              onPress={() => {
+                throwDice()
+              }}
+            >
+              <MaterialCommunityIcons
+                name={`dice-${dice.number}`}
+                size={32}
+                color={dice.color}
+              />
             </TouchableOpacity>
           </View>
+          <Counter
+            uplife={() => {
+              setPlayer2({ life: player2.life + 1, poison: player2.poison })
+            }}
+            downlife={() => {
+              setPlayer2({ life: player2.life - 1, poison: player2.poison })
+            }}
+            uppoison={() => {
+              setPlayer2({ life: player2.life, poison: player2.poison + 1 })
+            }}
+            downpoison={() => {
+              setPlayer2({ life: player2.life, poison: player2.poison - 1 })
+            }}
+            life={player2.life}
+            poison={player2.poison}
+            img={require('./assets/dracvermell.jpg')}
+          />
         </View>
       </View>
-    )
-  }
+    </SafeAreaView>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -246,23 +196,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   safearea: {
-    height: '95%',
-    width: '90%'
+    height: '100%',
+    width: '100%'
   },
   container: {
+    backgroundColor: 'black',
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    flexDirection: 'row'
+    flexDirection: 'column',
+    alignItems: 'stretch'
   },
   buttons: {
     alignItems: 'center',
     justifyContent: 'space-around',
     flexDirection: 'row'
   },
-  fullsize : {
-    width: (width/3),
+  fullsize: {
+    width: width / 3,
     alignItems: 'center'
   },
-  textsmall: { fontSize: 25 }
+  textsmall: { fontSize: 25, color: 'white' }
 })

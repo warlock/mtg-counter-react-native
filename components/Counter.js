@@ -1,48 +1,112 @@
-import React, { PureComponent } from 'react'
-import { View, Dimensions, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
+import React, { useState } from 'react'
+import {
+  View,
+  Dimensions,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground
+} from 'react-native'
+import { Entypo } from '@expo/vector-icons'
 
-class Counter extends PureComponent {
-    render () {
-        const { width } = Dimensions.get('screen')
-
-        return (
-          <ImageBackground source={this.props.img} style={{ alignItems: 'center', width: (width/2), backgroundColor: 'red', opacity: (this.props.life < 1 || this.props.poison > 9 ? 0.4:1) }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: (width/2)}}>
-              <TouchableOpacity onPress={() => this.props.uplife(1)}>
-                <Text style={[styles.textsmall, { color: 'lightgreen' }]}>+1 {this.props.n_life}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.props.uplife(5)}>
-                <Text style={[styles.textsmall, { color: 'lightgreen' }]}>+5 {this.props.n_life}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.props.poisonchange(false)}>
-                <Text style={[styles.textsmall, { color: 'magenta' }]}>-1 {this.props.n_poison}</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', width: (width/2), height: '80%' }}>
-              <TouchableOpacity onPress={() => this.props.downlife()}>
-                <View>
-                  <Text style={[styles.text, { color: 'lightgreen' }]}>{this.props.life}</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.props.poisonchange(true)}>
-                <View>
-                  <Text style={[styles.text, { color: 'magenta' }]}>{this.props.poison}</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </ImageBackground>
-        )
-    }
+export default ({ img, life, poison, downlife, downpoison, uplife, up }) => {
+  const [switcher, setSwitcher] = useState(true)
+  const { width } = Dimensions.get('screen')
+  return (
+    <ImageBackground
+      source={img}
+      style={[styles.background, { opacity: life < 1 || poison > 9 ? 0.4 : 1 }]}
+    >
+      <View style={styles.container}>
+        <Entypo
+          style={{
+            position: 'absolute',
+            zIndex: 3,
+            right: up ? 20 : null,
+            top: up ? 20 : null,
+            left: up ? null : 20,
+            bottom: up ? null : 20,
+            transform: up ? [{ rotate: '180deg' }] : []
+          }}
+          name={switcher ? 'drop' : 'heart'}
+          size={35}
+          color="white"
+          onPress={() => {
+            setSwitcher(!switcher)
+          }}
+        />
+        <TouchableOpacity
+          style={styles.opacityl}
+          onPress={() => {
+            if (switcher) {
+              downlife()
+            } else {
+              downpoison()
+            }
+          }}
+        />
+        <TouchableOpacity
+          style={styles.opacityr}
+          onPress={() => {
+            if (switcher) {
+              uplife()
+            } else {
+              uppoison()
+            }
+          }}
+        />
+        <Text
+          style={{
+            position: 'absolute',
+            zIndex: 0,
+            fontSize: width / 2,
+            color: switcher ? 'lightgreen' : 'magenta',
+            transform: up ? [{ rotate: '180deg' }] : [],
+            textShadowColor: 'rgba(0, 0, 0, 0.75)',
+            textShadowOffset: { width: 5, height: 5 },
+            textShadowRadius: 10
+          }}
+        >
+          {switcher ? life : poison}
+        </Text>
+      </View>
+    </ImageBackground>
+  )
 }
 
 const styles = StyleSheet.create({
-    text: { fontSize: 80 },
-    textsmall: { fontSize: 25 },
-    lines: {
-      borderWidth: 3,
-      borderColor: 'red'
-    }
-  })
-  
-
-export default Counter
+  textsmall: { fontSize: 25 },
+  lines: {
+    borderWidth: 3,
+    borderColor: 'red'
+  },
+  container: {
+    position: 'absolute',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center'
+  },
+  opacityl: {
+    position: 'absolute',
+    width: '40%',
+    height: '100%',
+    zIndex: 1,
+    //backgroundColor: 'red',
+    left: 0
+  },
+  opacityr: {
+    position: 'absolute',
+    width: '40%',
+    height: '100%',
+    zIndex: 1,
+    //backgroundColor: 'blue',
+    right: 0
+  },
+  background: {
+    width: '100%',
+    height: '50%',
+    alignItems: 'center',
+    backgroundColor: 'red'
+  }
+})
