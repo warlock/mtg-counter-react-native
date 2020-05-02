@@ -7,7 +7,7 @@ import {
   ImageBackground
 } from 'react-native'
 import { Entypo, AntDesign } from '@expo/vector-icons'
-const { width, height } = Dimensions.get('screen')
+const { width } = Dimensions.get('screen')
 
 export default ({
   img,
@@ -37,8 +37,12 @@ export default ({
         style={{
           position: 'absolute',
           zIndex: 3,
-          left: 15,
-          bottom: 15
+          left: 0,
+          bottom: 0,
+          width: 60,
+          height: 60,
+          padding: 10
+          //backgroundColor: 'red'
         }}
         name={switcher ? 'drop' : 'heart'}
         size={35}
