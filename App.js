@@ -13,6 +13,7 @@ import dayjs from 'dayjs'
 const { height, width } = Dimensions.get('screen')
 const sleep = secs => new Promise(resolve => setTimeout(resolve, secs * 1000))
 const MAX_TIME = 50 * 60 * 1000
+
 export default () => {
   const [dice, setDice] = useState({ number: 3, color: 'white' })
   const [viewtimer, setViewTimer] = useState(false)
@@ -37,8 +38,6 @@ export default () => {
       setTimer(`[${dayjs(seconds).format('mm:ss')}]`)
       clearInterval(interval)
     }
-    //dayjs(seconds).format('mm:ss')
-    //setTimer(`[${dayjs(seconds).format('mm:ss')}]`)
     return () => clearInterval(interval)
   }, [seconds, isActive])
 
@@ -82,33 +81,24 @@ export default () => {
     })
   }
 
-  const startTimer = () => {
-    setViewTimer(true)
-    setIsActive(true)
-  }
-
-  const stopTimer = () => {
-    setIsActive(false)
-  }
-
   return (
     <SafeAreaView style={styles.back}>
       <View style={styles.safearea}>
         <View style={styles.container}>
           <Counter
             up={true}
-            uplife={() => {
+            uplife={() =>
               setPlayer1({ life: player1.life + 1, poison: player1.poison })
-            }}
-            downlife={() => {
+            }
+            downlife={() =>
               setPlayer1({ life: player1.life - 1, poison: player1.poison })
-            }}
-            uppoison={() => {
+            }
+            uppoison={() =>
               setPlayer1({ life: player1.life, poison: player1.poison + 1 })
-            }}
-            downpoison={() => {
+            }
+            downpoison={() =>
               setPlayer1({ life: player1.life, poison: player1.poison - 1 })
-            }}
+            }
             life={player1.life}
             poison={player1.poison}
             img={require('./assets/draclila.jpg')}
@@ -121,8 +111,12 @@ export default () => {
                 justifyContent: 'space-around'
               }}
               onPress={() => {
-                if (isActive) stopTimer()
-                else startTimer()
+                if (isActive) {
+                  setIsActive(false)
+                } else {
+                  setViewTimer(true)
+                  setIsActive(true)
+                }
               }}
             >
               {viewtimer ? (
@@ -141,9 +135,7 @@ export default () => {
                 alignItems: 'center',
                 justifyContent: 'space-around'
               }}
-              onPress={() => {
-                resetGame()
-              }}
+              onPress={() => resetGame()}
             >
               <MaterialCommunityIcons name="reload" size={32} color="white" />
             </TouchableOpacity>
@@ -153,9 +145,7 @@ export default () => {
                 alignItems: 'center',
                 justifyContent: 'space-around'
               }}
-              onPress={() => {
-                throwDice()
-              }}
+              onPress={() => throwDice()}
             >
               <MaterialCommunityIcons
                 name={`dice-${dice.number}`}
@@ -165,18 +155,18 @@ export default () => {
             </TouchableOpacity>
           </View>
           <Counter
-            uplife={() => {
+            uplife={() =>
               setPlayer2({ life: player2.life + 1, poison: player2.poison })
-            }}
-            downlife={() => {
+            }
+            downlife={() =>
               setPlayer2({ life: player2.life - 1, poison: player2.poison })
-            }}
-            uppoison={() => {
+            }
+            uppoison={() =>
               setPlayer2({ life: player2.life, poison: player2.poison + 1 })
-            }}
-            downpoison={() => {
+            }
+            downpoison={() =>
               setPlayer2({ life: player2.life, poison: player2.poison - 1 })
-            }}
+            }
             life={player2.life}
             poison={player2.poison}
             img={require('./assets/dracvermell.jpg')}

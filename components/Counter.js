@@ -40,9 +40,7 @@ export default ({
           name={switcher ? 'drop' : 'heart'}
           size={35}
           color="white"
-          onPress={() => {
-            setSwitcher(!switcher)
-          }}
+          onPress={() => setSwitcher(!switcher)}
         />
         <TouchableOpacity
           style={styles.opacityl}
