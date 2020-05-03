@@ -46,7 +46,6 @@ export default () => {
     setIsActive(false)
     setSeconds(MAX_TIME)
     setViewTimer(false)
-    setTimer('50:00')
 
     setPlayer1({
       life: 20,
