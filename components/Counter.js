@@ -42,7 +42,6 @@ export default ({
           width: 60,
           height: 60,
           padding: 10
-          //backgroundColor: 'red'
         }}
         name={switcher ? 'drop' : 'heart'}
         size={35}
@@ -122,7 +121,6 @@ const styles = StyleSheet.create({
     width: '40%',
     height: '100%',
     zIndex: 1,
-    //backgroundColor: 'red',
     left: 0,
     justifyContent: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
@@ -134,7 +132,6 @@ const styles = StyleSheet.create({
     width: '40%',
     height: '100%',
     zIndex: 1,
-    //backgroundColor: 'blue',
     right: 0,
     justifyContent: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
