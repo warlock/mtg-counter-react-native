@@ -1,85 +1,114 @@
 import React, { useState } from 'react'
 import {
-  View,
   Dimensions,
   Text,
   StyleSheet,
   TouchableOpacity,
   ImageBackground
 } from 'react-native'
-import { Entypo } from '@expo/vector-icons'
+import { Entypo, AntDesign } from '@expo/vector-icons'
+const { width } = Dimensions.get('screen')
 
-export default ({ img, life, poison, downlife, downpoison, uplife, up }) => {
+export default ({
+  img,
+  life,
+  poison,
+  downlife,
+  downpoison,
+  uplife,
+  uppoison,
+  up
+}) => {
   const [switcher, setSwitcher] = useState(true)
-  const { width } = Dimensions.get('screen')
   return (
     <ImageBackground
       source={img}
-      style={[styles.background, { opacity: life < 1 || poison > 9 ? 0.4 : 1 }]}
+      style={[
+        {
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          opacity: life < 1 || poison > 9 ? 0.4 : 1,
+          transform: up ? [{ rotate: '180deg' }] : null
+        }
+      ]}
     >
-      <View style={styles.container}>
-        <Entypo
+      <Entypo
+        style={{
+          position: 'absolute',
+          zIndex: 3,
+          left: 0,
+          bottom: 0,
+          width: 60,
+          height: 60,
+          padding: 10
+        }}
+        name={switcher ? 'drop' : 'heart'}
+        size={35}
+        color="white"
+        onPress={() => setSwitcher(!switcher)}
+      />
+      <TouchableOpacity
+        style={styles.opacityr}
+        onPress={() => {
+          if (switcher) {
+            downlife()
+          } else {
+            uppoison()
+          }
+        }}
+      >
+        <AntDesign
           style={{
             position: 'absolute',
             zIndex: 3,
-            right: up ? 20 : null,
-            top: up ? 20 : null,
-            left: up ? null : 20,
-            bottom: up ? null : 20,
-            transform: up ? [{ rotate: '180deg' }] : []
+            alignSelf: 'center'
           }}
-          name={switcher ? 'drop' : 'heart'}
+          name={switcher ? 'minuscircleo' : 'pluscircleo'}
           size={35}
           color="white"
-          onPress={() => {
-            setSwitcher(!switcher)
-          }}
         />
-        <TouchableOpacity
-          style={styles.opacityl}
-          onPress={() => {
-            if (switcher) {
-              downlife()
-            } else {
-              downpoison()
-            }
-          }}
-        />
-        <TouchableOpacity
-          style={styles.opacityr}
-          onPress={() => {
-            if (switcher) {
-              uplife()
-            } else {
-              uppoison()
-            }
-          }}
-        />
-        <Text
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.opacityl}
+        onPress={() => {
+          if (switcher) {
+            uplife()
+          } else {
+            downpoison()
+          }
+        }}
+      >
+        <AntDesign
           style={{
             position: 'absolute',
-            zIndex: 0,
-            fontSize: width / 2,
-            color: switcher ? 'lightgreen' : 'magenta',
-            transform: up ? [{ rotate: '180deg' }] : [],
-            textShadowColor: 'rgba(0, 0, 0, 0.75)',
-            textShadowOffset: { width: 5, height: 5 },
-            textShadowRadius: 10
+            zIndex: 3,
+            alignSelf: 'center'
           }}
-        >
-          {switcher ? life : poison}
-        </Text>
-      </View>
+          name={switcher ? 'pluscircleo' : 'minuscircleo'}
+          size={38}
+          color="white"
+        />
+      </TouchableOpacity>
+      <Text
+        style={{
+          position: 'absolute',
+          zIndex: 0,
+          fontSize: width / 3,
+          color: switcher ? 'white' : 'magenta',
+          textShadowColor: 'rgba(0, 0, 0, 0.75)',
+          textShadowOffset: { width: 5, height: 5 },
+          textShadowRadius: 10
+        }}
+      >
+        {switcher ? life : poison}
+      </Text>
     </ImageBackground>
   )
 }
 
 const styles = StyleSheet.create({
   textsmall: { fontSize: 25 },
-  lines: {
-    borderWidth: 3,
-    borderColor: 'red'
-  },
   container: {
     position: 'absolute',
     alignItems: 'center',
@@ -92,21 +121,21 @@ const styles = StyleSheet.create({
     width: '40%',
     height: '100%',
     zIndex: 1,
-    //backgroundColor: 'red',
-    left: 0
+    left: 0,
+    justifyContent: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 5, height: 5 },
+    textShadowRadius: 10
   },
   opacityr: {
     position: 'absolute',
     width: '40%',
     height: '100%',
     zIndex: 1,
-    //backgroundColor: 'blue',
-    right: 0
-  },
-  background: {
-    width: '100%',
-    height: '50%',
-    alignItems: 'center',
-    backgroundColor: 'red'
+    right: 0,
+    justifyContent: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 5, height: 5 },
+    textShadowRadius: 10
   }
 })

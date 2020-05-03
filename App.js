@@ -5,15 +5,19 @@ import {
   Dimensions,
   Text,
   TouchableOpacity,
-  SafeAreaView
+  SafeAreaView,
+  StatusBar
 } from 'react-native'
 import Counter from './components/Counter'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import dayjs from 'dayjs'
-const { height, width } = Dimensions.get('screen')
 const sleep = secs => new Promise(resolve => setTimeout(resolve, secs * 1000))
 const MAX_TIME = 50 * 60 * 1000
+const { width } = Dimensions.get('screen')
+import { useKeepAwake } from 'expo-keep-awake'
+
 export default () => {
+  useKeepAwake()
   const [dice, setDice] = useState({ number: 3, color: 'white' })
   const [viewtimer, setViewTimer] = useState(false)
   const [isActive, setIsActive] = useState(false)
@@ -37,8 +41,6 @@ export default () => {
       setTimer(`[${dayjs(seconds).format('mm:ss')}]`)
       clearInterval(interval)
     }
-    //dayjs(seconds).format('mm:ss')
-    //setTimer(`[${dayjs(seconds).format('mm:ss')}]`)
     return () => clearInterval(interval)
   }, [seconds, isActive])
 
@@ -46,7 +48,6 @@ export default () => {
     setIsActive(false)
     setSeconds(MAX_TIME)
     setViewTimer(false)
-    setTimer('50:00')
 
     setPlayer1({
       life: 20,
@@ -82,137 +83,122 @@ export default () => {
     })
   }
 
-  const startTimer = () => {
-    setViewTimer(true)
-    setIsActive(true)
-  }
-
-  const stopTimer = () => {
-    setIsActive(false)
-  }
-
   return (
-    <SafeAreaView style={styles.back}>
-      <View style={styles.safearea}>
-        <View style={styles.container}>
-          <Counter
-            up={true}
-            uplife={() => {
-              setPlayer1({ life: player1.life + 1, poison: player1.poison })
+    <SafeAreaView style={styles.background}>
+      <StatusBar backgroundColor="black" barStyle="light-content" />
+      <View style={styles.inview}>
+        <Counter
+          up={true}
+          uplife={() =>
+            setPlayer1({ life: player1.life + 1, poison: player1.poison })
+          }
+          downlife={() =>
+            setPlayer1({ life: player1.life - 1, poison: player1.poison })
+          }
+          uppoison={() =>
+            setPlayer1({ life: player1.life, poison: player1.poison + 1 })
+          }
+          downpoison={() =>
+            setPlayer1({ life: player1.life, poison: player1.poison - 1 })
+          }
+          life={player1.life}
+          poison={player1.poison}
+          img={require('./assets/red.jpg')}
+        />
+        <View style={[styles.buttons]}>
+          <TouchableOpacity
+            style={{
+              width: width / 3,
+              alignItems: 'center',
+              justifyContent: 'space-around'
             }}
-            downlife={() => {
-              setPlayer1({ life: player1.life - 1, poison: player1.poison })
+            onPress={() => {
+              if (isActive) {
+                setIsActive(false)
+              } else {
+                setViewTimer(true)
+                setIsActive(true)
+              }
             }}
-            uppoison={() => {
-              setPlayer1({ life: player1.life, poison: player1.poison + 1 })
-            }}
-            downpoison={() => {
-              setPlayer1({ life: player1.life, poison: player1.poison - 1 })
-            }}
-            life={player1.life}
-            poison={player1.poison}
-            img={require('./assets/draclila.jpg')}
-          />
-          <View style={[styles.buttons, { width }]}>
-            <TouchableOpacity
-              style={{
-                width: width / 3,
-                alignItems: 'center',
-                justifyContent: 'space-around'
-              }}
-              onPress={() => {
-                if (isActive) stopTimer()
-                else startTimer()
-              }}
-            >
-              {viewtimer ? (
-                <Text style={styles.textsmall}>{timer}</Text>
-              ) : (
-                <MaterialCommunityIcons
-                  name="clock-outline"
-                  size={32}
-                  color="white"
-                />
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: width / 3,
-                alignItems: 'center',
-                justifyContent: 'space-around'
-              }}
-              onPress={() => {
-                resetGame()
-              }}
-            >
-              <MaterialCommunityIcons name="reload" size={32} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: width / 3,
-                alignItems: 'center',
-                justifyContent: 'space-around'
-              }}
-              onPress={() => {
-                throwDice()
-              }}
-            >
+          >
+            {viewtimer ? (
+              <Text style={styles.textsmall}>{timer}</Text>
+            ) : (
               <MaterialCommunityIcons
-                name={`dice-${dice.number}`}
+                name="clock-outline"
                 size={32}
-                color={dice.color}
+                color="white"
               />
-            </TouchableOpacity>
-          </View>
-          <Counter
-            uplife={() => {
-              setPlayer2({ life: player2.life + 1, poison: player2.poison })
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              width: width / 3,
+              alignItems: 'center',
+              justifyContent: 'space-around'
             }}
-            downlife={() => {
-              setPlayer2({ life: player2.life - 1, poison: player2.poison })
+            onPress={() => resetGame()}
+          >
+            <MaterialCommunityIcons name="reload" size={32} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              width: width / 3,
+              alignItems: 'center',
+              justifyContent: 'space-around'
             }}
-            uppoison={() => {
-              setPlayer2({ life: player2.life, poison: player2.poison + 1 })
-            }}
-            downpoison={() => {
-              setPlayer2({ life: player2.life, poison: player2.poison - 1 })
-            }}
-            life={player2.life}
-            poison={player2.poison}
-            img={require('./assets/dracvermell.jpg')}
-          />
+            onPress={() => throwDice()}
+          >
+            <MaterialCommunityIcons
+              name={`dice-${dice.number}`}
+              size={32}
+              color={dice.color}
+            />
+          </TouchableOpacity>
         </View>
+        <Counter
+          uplife={() =>
+            setPlayer2({ life: player2.life + 1, poison: player2.poison })
+          }
+          downlife={() =>
+            setPlayer2({ life: player2.life - 1, poison: player2.poison })
+          }
+          uppoison={() =>
+            setPlayer2({ life: player2.life, poison: player2.poison + 1 })
+          }
+          downpoison={() =>
+            setPlayer2({ life: player2.life, poison: player2.poison - 1 })
+          }
+          life={player2.life}
+          poison={player2.poison}
+          img={require('./assets/blue.jpg')}
+        />
       </View>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  back: {
-    backgroundColor: 'grey',
-    height,
-    width,
-    alignItems: 'center',
-    flexDirection: 'row'
-  },
-  safearea: {
-    height: '100%',
-    width: '100%'
-  },
-  container: {
+  background: {
     backgroundColor: 'black',
     flex: 1,
-    flexDirection: 'column',
-    alignItems: 'stretch'
+    height: '100%'
   },
   buttons: {
     alignItems: 'center',
     justifyContent: 'space-around',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    height: 46
   },
-  fullsize: {
-    width: width / 3,
-    alignItems: 'center'
+  inview: {
+    height: '100%',
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    justifyContent: 'space-evenly'
   },
-  textsmall: { fontSize: 25, color: 'white' }
+  textsmall: {
+    fontSize: 25,
+    color: 'white'
+  }
 })
