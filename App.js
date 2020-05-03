@@ -13,9 +13,11 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import dayjs from 'dayjs'
 const sleep = secs => new Promise(resolve => setTimeout(resolve, secs * 1000))
 const MAX_TIME = 50 * 60 * 1000
-const { height, width } = Dimensions.get('screen')
+const { width } = Dimensions.get('screen')
+import { useKeepAwake } from 'expo-keep-awake'
 
 export default () => {
+  useKeepAwake()
   const [dice, setDice] = useState({ number: 3, color: 'white' })
   const [viewtimer, setViewTimer] = useState(false)
   const [isActive, setIsActive] = useState(false)
