@@ -4,9 +4,10 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  ImageBackground
+  ImageBackground,
+  Image
 } from 'react-native'
-import { Entypo, AntDesign } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
 const { width } = Dimensions.get('screen')
 
 export default ({
@@ -33,26 +34,29 @@ export default ({
         }
       ]}
     >
-      <Entypo
+      <TouchableOpacity
         style={{
           position: 'absolute',
           zIndex: 3,
           left: 0,
-          bottom: 0,
+          bottom: 10,
           width: 60,
           height: 60,
           padding: 10
         }}
-        name={switcher ? 'drop' : 'heart'}
-        size={35}
-        color="white"
         onPress={() => setSwitcher(!switcher)}
-      />
+      >
+        {switcher ? (
+          <Image source={require('../assets/poison.png')} />
+        ) : (
+          <Image source={require('../assets/planeswalker.png')} />
+        )}
+      </TouchableOpacity>
       <TouchableOpacity
         style={styles.opacityr}
         onPress={() => {
           if (switcher) {
-            downlife()
+            uplife()
           } else {
             uppoison()
           }
@@ -64,7 +68,7 @@ export default ({
             zIndex: 3,
             alignSelf: 'center'
           }}
-          name={switcher ? 'minuscircleo' : 'pluscircleo'}
+          name={'pluscircleo'}
           size={35}
           color="white"
         />
@@ -73,7 +77,7 @@ export default ({
         style={styles.opacityl}
         onPress={() => {
           if (switcher) {
-            uplife()
+            downlife()
           } else {
             downpoison()
           }
@@ -85,7 +89,7 @@ export default ({
             zIndex: 3,
             alignSelf: 'center'
           }}
-          name={switcher ? 'pluscircleo' : 'minuscircleo'}
+          name={'minuscircleo'}
           size={38}
           color="white"
         />
