@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  StatusBar
-} from 'react-native'
+import { StyleSheet, View, Dimensions, Text, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native'
 import Counter from './components/Counter'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import dayjs from 'dayjs'
+import { useKeepAwake } from 'expo-keep-awake'
+import useCachedResources from './hooks/useCachedResources'
+
 const sleep = secs => new Promise(resolve => setTimeout(resolve, secs * 1000))
 const MAX_TIME = 50 * 60 * 1000
 const { width } = Dimensions.get('screen')
-import { useKeepAwake } from 'expo-keep-awake'
 
 export default () => {
   useKeepAwake()
@@ -25,6 +19,7 @@ export default () => {
   const [seconds, setSeconds] = useState(MAX_TIME)
   const [player1, setPlayer1] = useState({ life: 20, poison: 0 })
   const [player2, setPlayer2] = useState({ life: 20, poison: 0 })
+  const isLoadingComplete = useCachedResources()
 
   useEffect(() => {
     let interval = null
@@ -45,9 +40,10 @@ export default () => {
   }, [seconds, isActive])
 
   const resetGame = () => {
+    setViewTimer(false)
     setIsActive(false)
     setSeconds(MAX_TIME)
-    setViewTimer(false)
+    setTimer('50:00')
 
     setPlayer1({
       life: 20,
@@ -83,99 +79,74 @@ export default () => {
     })
   }
 
-  return (
-    <SafeAreaView style={styles.background}>
-      <StatusBar backgroundColor="black" barStyle="light-content" />
-      <View style={styles.inview}>
-        <Counter
-          up={true}
-          uplife={() =>
-            setPlayer1({ life: player1.life + 1, poison: player1.poison })
-          }
-          downlife={() =>
-            setPlayer1({ life: player1.life - 1, poison: player1.poison })
-          }
-          uppoison={() =>
-            setPlayer1({ life: player1.life, poison: player1.poison + 1 })
-          }
-          downpoison={() =>
-            setPlayer1({ life: player1.life, poison: player1.poison - 1 })
-          }
-          life={player1.life}
-          poison={player1.poison}
-          img={require('./assets/red.jpg')}
-        />
-        <View style={[styles.buttons]}>
-          <TouchableOpacity
-            style={{
-              width: width / 3,
-              alignItems: 'center',
-              justifyContent: 'space-around'
-            }}
-            onPress={() => {
-              if (isActive) {
-                setIsActive(false)
-              } else {
-                setViewTimer(true)
-                setIsActive(true)
-              }
-            }}
-          >
-            {viewtimer ? (
-              <Text style={styles.textsmall}>{timer}</Text>
-            ) : (
-              <MaterialCommunityIcons
-                name="clock-outline"
-                size={32}
-                color="white"
-              />
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              width: width / 3,
-              alignItems: 'center',
-              justifyContent: 'space-around'
-            }}
-            onPress={() => resetGame()}
-          >
-            <MaterialCommunityIcons name="reload" size={32} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              width: width / 3,
-              alignItems: 'center',
-              justifyContent: 'space-around'
-            }}
-            onPress={() => throwDice()}
-          >
-            <MaterialCommunityIcons
-              name={`dice-${dice.number}`}
-              size={32}
-              color={dice.color}
-            />
-          </TouchableOpacity>
+  if (!isLoadingComplete) {
+    return null
+  } else
+    return (
+      <SafeAreaView style={styles.background}>
+        <StatusBar backgroundColor="black" barStyle="light-content" />
+        <View style={styles.inview}>
+          <Counter
+            up={true}
+            uplife={() => setPlayer1({ life: player1.life + 1, poison: player1.poison })}
+            downlife={() => setPlayer1({ life: player1.life - 1, poison: player1.poison })}
+            uppoison={() => setPlayer1({ life: player1.life, poison: player1.poison + 1 })}
+            downpoison={() => setPlayer1({ life: player1.life, poison: player1.poison - 1 })}
+            life={player1.life}
+            poison={player1.poison}
+            img={require('./assets/red.jpg')}
+          />
+          <View style={[styles.buttons]}>
+            <TouchableOpacity
+              style={{
+                width: width / 3,
+                alignItems: 'center',
+                justifyContent: 'space-around'
+              }}
+              onPress={() => {
+                if (isActive) {
+                  setIsActive(false)
+                } else {
+                  setViewTimer(true)
+                  setIsActive(true)
+                }
+              }}
+            >
+              {viewtimer ? <Text style={styles.textsmall}>{timer}</Text> : <MaterialCommunityIcons name="clock-outline" size={32} color="white" />}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                width: width / 3,
+                alignItems: 'center',
+                justifyContent: 'space-around'
+              }}
+              onPress={() => resetGame()}
+            >
+              <MaterialCommunityIcons name="reload" size={32} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                width: width / 3,
+                alignItems: 'center',
+                justifyContent: 'space-around'
+              }}
+              onPress={() => throwDice()}
+            >
+              <MaterialCommunityIcons name={`dice-${dice.number}`} size={32} color={dice.color} />
+            </TouchableOpacity>
+          </View>
+          <Counter
+            uplife={() => setPlayer2({ life: player2.life + 1, poison: player2.poison })}
+            downlife={() => setPlayer2({ life: player2.life - 1, poison: player2.poison })}
+            uppoison={() => setPlayer2({ life: player2.life, poison: player2.poison + 1 })}
+            downpoison={() => setPlayer2({ life: player2.life, poison: player2.poison - 1 })}
+            life={player2.life}
+            poison={player2.poison}
+            img={require('./assets/blue.jpg')}
+          />
         </View>
-        <Counter
-          uplife={() =>
-            setPlayer2({ life: player2.life + 1, poison: player2.poison })
-          }
-          downlife={() =>
-            setPlayer2({ life: player2.life - 1, poison: player2.poison })
-          }
-          uppoison={() =>
-            setPlayer2({ life: player2.life, poison: player2.poison + 1 })
-          }
-          downpoison={() =>
-            setPlayer2({ life: player2.life, poison: player2.poison - 1 })
-          }
-          life={player2.life}
-          poison={player2.poison}
-          img={require('./assets/blue.jpg')}
-        />
-      </View>
-    </SafeAreaView>
-  )
+      </SafeAreaView>
+    )
 }
 
 const styles = StyleSheet.create({
