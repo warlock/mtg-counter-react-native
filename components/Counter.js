@@ -42,10 +42,9 @@ export default forwardRef(({ img, invert }, ref) => {
       ]}
     >
       <View style={[styles.buttonBox, { width }]}>
-        <ModeButton image={require('../assets/poison.png')} setmode={() => setMode('life')} />
+        <ModeButton image={require('../assets/heart.png')} setmode={() => setMode('life')} />
         <ModeButton image={require('../assets/poison.png')} setmode={() => setMode('poison')} />
         <ModeButton image={require('../assets/planeswalker.png')} setmode={() => setMode('planeswalker')} />
-        <ModeButton image={require('../assets/poison.png')} setmode={() => alert('canvia imatge')} />
       </View>
       <TouchableOpacity
         style={styles.opacityr}
