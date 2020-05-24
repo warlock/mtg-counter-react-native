@@ -17,8 +17,6 @@ export default () => {
   const [isActive, setIsActive] = useState(false)
   const [timer, setTimer] = useState('50:00')
   const [seconds, setSeconds] = useState(MAX_TIME)
-  const [player1, setPlayer1] = useState({ life: 20, poison: 0 })
-  const [player2, setPlayer2] = useState({ life: 20, poison: 0 })
   const isLoadingComplete = useCachedResources()
 
   useEffect(() => {
@@ -44,7 +42,7 @@ export default () => {
     setIsActive(false)
     setSeconds(MAX_TIME)
     setTimer('50:00')
-
+    /*
     setPlayer1({
       life: 20,
       poison: 0
@@ -54,6 +52,7 @@ export default () => {
       life: 20,
       poison: 0
     })
+    */
   }
 
   const throwDice = async () => {
@@ -86,16 +85,7 @@ export default () => {
       <SafeAreaView style={styles.background}>
         <StatusBar backgroundColor="black" barStyle="light-content" />
         <View style={styles.inview}>
-          <Counter
-            up={true}
-            uplife={() => setPlayer1({ life: player1.life + 1, poison: player1.poison })}
-            downlife={() => setPlayer1({ life: player1.life - 1, poison: player1.poison })}
-            uppoison={() => setPlayer1({ life: player1.life, poison: player1.poison + 1 })}
-            downpoison={() => setPlayer1({ life: player1.life, poison: player1.poison - 1 })}
-            life={player1.life}
-            poison={player1.poison}
-            img={require('./assets/red.jpg')}
-          />
+          <Counter invert={true} img={require('./assets/red.jpg')} />
           <View style={[styles.buttons]}>
             <TouchableOpacity
               style={{
@@ -135,15 +125,7 @@ export default () => {
               <MaterialCommunityIcons name={`dice-${dice.number}`} size={32} color={dice.color} />
             </TouchableOpacity>
           </View>
-          <Counter
-            uplife={() => setPlayer2({ life: player2.life + 1, poison: player2.poison })}
-            downlife={() => setPlayer2({ life: player2.life - 1, poison: player2.poison })}
-            uppoison={() => setPlayer2({ life: player2.life, poison: player2.poison + 1 })}
-            downpoison={() => setPlayer2({ life: player2.life, poison: player2.poison - 1 })}
-            life={player2.life}
-            poison={player2.poison}
-            img={require('./assets/blue.jpg')}
-          />
+          <Counter img={require('./assets/blue.jpg')} />
         </View>
       </SafeAreaView>
     )
