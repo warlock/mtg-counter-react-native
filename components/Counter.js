@@ -1,26 +1,33 @@
-import React, { useState } from 'react'
-import {
-  Dimensions,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ImageBackground,
-  Image
-} from 'react-native'
+import React, { useState, forwardRef, useImperativeHandle } from 'react'
+import { Dimensions, Text, StyleSheet, TouchableOpacity, ImageBackground, View } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
+import ModeButton from './ModeButton'
 const { width } = Dimensions.get('screen')
 
-export default ({
-  img,
-  life,
-  poison,
-  downlife,
-  downpoison,
-  uplife,
-  uppoison,
-  up
-}) => {
-  const [switcher, setSwitcher] = useState(true)
+export default forwardRef(({ img, invert }, ref) => {
+  const [status, setStatus] = useState({
+    life: 20,
+    poison: 0,
+    planeswalker: 0
+  })
+  const [mode, setMode] = useState('life')
+
+  useImperativeHandle(ref, () => ({
+    reset() {
+      setStatus({
+        life: 20,
+        poison: 0,
+        planeswalker: 0
+      })
+    }
+  }))
+
+  const colorSelector = {
+    life: 'white',
+    poison: 'magenta',
+    planeswalker: 'blue'
+  }
+
   return (
     <ImageBackground
       source={img}
@@ -29,37 +36,20 @@ export default ({
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          opacity: life < 1 || poison > 9 ? 0.4 : 1,
-          transform: up ? [{ rotate: '180deg' }] : null
+          opacity: status.life < 1 || status.poison > 9 ? 0.4 : 1,
+          transform: invert ? [{ rotate: '180deg' }] : null
         }
       ]}
     >
-      <TouchableOpacity
-        style={{
-          position: 'absolute',
-          zIndex: 3,
-          left: 0,
-          bottom: 10,
-          width: 60,
-          height: 60,
-          padding: 10
-        }}
-        onPress={() => setSwitcher(!switcher)}
-      >
-        {switcher ? (
-          <Image source={require('../assets/poison.png')} />
-        ) : (
-          <Image source={require('../assets/planeswalker.png')} />
-        )}
-      </TouchableOpacity>
+      <View style={[styles.buttonBox, { width }]}>
+        <ModeButton image={require('../assets/heart.png')} setmode={() => setMode('life')} />
+        <ModeButton image={require('../assets/poison.png')} setmode={() => setMode('poison')} />
+        <ModeButton image={require('../assets/planeswalker.png')} setmode={() => setMode('planeswalker')} />
+      </View>
       <TouchableOpacity
         style={styles.opacityr}
         onPress={() => {
-          if (switcher) {
-            uplife()
-          } else {
-            uppoison()
-          }
+          setStatus({ ...status, [mode]: status[mode] + 1 })
         }}
       >
         <AntDesign
@@ -76,11 +66,7 @@ export default ({
       <TouchableOpacity
         style={styles.opacityl}
         onPress={() => {
-          if (switcher) {
-            downlife()
-          } else {
-            downpoison()
-          }
+          setStatus({ ...status, [mode]: status[mode] - 1 })
         }}
       >
         <AntDesign
@@ -94,31 +80,31 @@ export default ({
           color="white"
         />
       </TouchableOpacity>
-      <Text
-        style={{
-          position: 'absolute',
-          zIndex: 0,
-          fontSize: width / 3,
-          color: switcher ? 'white' : 'magenta',
-          textShadowColor: 'rgba(0, 0, 0, 0.75)',
-          textShadowOffset: { width: 5, height: 5 },
-          textShadowRadius: 10
-        }}
-      >
-        {switcher ? life : poison}
-      </Text>
+      <Text style={[styles.textBig, { color: colorSelector[mode] }]}>{status[mode]}</Text>
     </ImageBackground>
   )
-}
+})
+
+const shadows = { textShadowColor: 'rgba(0, 0, 0, 0.75)', textShadowOffset: { width: 5, height: 5 }, textShadowRadius: 10 }
 
 const styles = StyleSheet.create({
-  textsmall: { fontSize: 25 },
-  container: {
+  buttonBox: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     position: 'absolute',
-    alignItems: 'center',
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center'
+    zIndex: 3,
+    left: 0,
+    bottom: 10,
+    width: 60,
+    height: 60,
+    padding: 10
+  },
+  textBig: {
+    position: 'absolute',
+    zIndex: 0,
+    fontSize: width / 3,
+    ...shadows
   },
   opacityl: {
     position: 'absolute',
@@ -127,9 +113,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
     left: 0,
     justifyContent: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 5, height: 5 },
-    textShadowRadius: 10
+    ...shadows
   },
   opacityr: {
     position: 'absolute',
@@ -138,8 +122,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     right: 0,
     justifyContent: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 5, height: 5 },
-    textShadowRadius: 10
+    ...shadows
   }
 })
