@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, View, Dimensions, Text, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native'
 import Counter from './components/Counter'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -17,6 +17,8 @@ export default () => {
   const [isActive, setIsActive] = useState(false)
   const [timer, setTimer] = useState('50:00')
   const [seconds, setSeconds] = useState(MAX_TIME)
+  const playerCounter = useRef()
+  const playerCounter2 = useRef()
   const isLoadingComplete = useCachedResources()
 
   useEffect(() => {
@@ -42,17 +44,8 @@ export default () => {
     setIsActive(false)
     setSeconds(MAX_TIME)
     setTimer('50:00')
-    /*
-    setPlayer1({
-      life: 20,
-      poison: 0
-    })
-
-    setPlayer2({
-      life: 20,
-      poison: 0
-    })
-    */
+    playerCounter.current.reset()
+    playerCounter2.current.reset()
   }
 
   const throwDice = async () => {
@@ -85,7 +78,7 @@ export default () => {
       <SafeAreaView style={styles.background}>
         <StatusBar backgroundColor="black" barStyle="light-content" />
         <View style={styles.inview}>
-          <Counter invert={true} img={require('./assets/red.jpg')} />
+          <Counter ref={playerCounter} invert={true} img={require('./assets/red.jpg')} />
           <View style={[styles.buttons]}>
             <TouchableOpacity
               style={{
@@ -125,7 +118,7 @@ export default () => {
               <MaterialCommunityIcons name={`dice-${dice.number}`} size={32} color={dice.color} />
             </TouchableOpacity>
           </View>
-          <Counter img={require('./assets/blue.jpg')} />
+          <Counter ref={playerCounter2} img={require('./assets/blue.jpg')} />
         </View>
       </SafeAreaView>
     )

@@ -1,16 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, forwardRef, useImperativeHandle } from 'react'
 import { Dimensions, Text, StyleSheet, TouchableOpacity, ImageBackground, View } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import ModeButton from './ModeButton'
 const { width } = Dimensions.get('screen')
 
-export default ({ img, invert }) => {
+export default forwardRef(({ img, invert }, ref) => {
   const [status, setStatus] = useState({
     life: 20,
     poison: 0,
     planeswalker: 0
   })
   const [mode, setMode] = useState('life')
+
+  useImperativeHandle(ref, () => ({
+    reset() {
+      setStatus({
+        life: 20,
+        poison: 0,
+        planeswalker: 0
+      })
+    }
+  }))
+
+  const colorSelector = {
+    life: 'white',
+    poison: 'magenta',
+    planeswalker: 'blue'
+  }
 
   return (
     <ImageBackground
@@ -65,10 +81,12 @@ export default ({ img, invert }) => {
           color="white"
         />
       </TouchableOpacity>
-      <Text style={[styles.textBig, { color: mode === 'poison' ? 'magenta' : 'white' }]}>{status[mode]}</Text>
+      <Text style={[styles.textBig, { color: colorSelector[mode] }]}>{status[mode]}</Text>
     </ImageBackground>
   )
-}
+})
+
+const shadows = { textShadowColor: 'rgba(0, 0, 0, 0.75)', textShadowOffset: { width: 5, height: 5 }, textShadowRadius: 10 }
 
 const styles = StyleSheet.create({
   buttonBox: {
@@ -87,9 +105,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 0,
     fontSize: width / 3,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 5, height: 5 },
-    textShadowRadius: 10
+    ...shadows
   },
   opacityl: {
     position: 'absolute',
@@ -98,9 +114,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
     left: 0,
     justifyContent: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 5, height: 5 },
-    textShadowRadius: 10
+    ...shadows
   },
   opacityr: {
     position: 'absolute',
@@ -109,8 +123,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     right: 0,
     justifyContent: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 5, height: 5 },
-    textShadowRadius: 10
+    ...shadows
   }
 })
