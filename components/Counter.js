@@ -1,5 +1,12 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react'
-import { Dimensions, Text, StyleSheet, TouchableOpacity, ImageBackground, View } from 'react-native'
+import {
+  Dimensions,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+  View
+} from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import ModeButton from './ModeButton'
 const { width } = Dimensions.get('screen')
@@ -42,9 +49,18 @@ export default forwardRef(({ img, invert }, ref) => {
       ]}
     >
       <View style={[styles.buttonBox, { width }]}>
-        <ModeButton image={require('../assets/heart.png')} setmode={() => setMode('life')} />
-        <ModeButton image={require('../assets/poison.png')} setmode={() => setMode('poison')} />
-        <ModeButton image={require('../assets/planeswalker.png')} setmode={() => setMode('planeswalker')} />
+        <ModeButton
+          image={require('../assets/heart.png')}
+          setmode={() => setMode('life')}
+        />
+        <ModeButton
+          image={require('../assets/poison.png')}
+          setmode={() => setMode('poison')}
+        />
+        <ModeButton
+          image={require('../assets/planeswalker.png')}
+          setmode={() => setMode('planeswalker')}
+        />
       </View>
       <TouchableOpacity
         style={styles.opacityr}
@@ -80,12 +96,18 @@ export default forwardRef(({ img, invert }, ref) => {
           color="white"
         />
       </TouchableOpacity>
-      <Text style={[styles.textBig, { color: colorSelector[mode] }]}>{status[mode]}</Text>
+      <Text style={[styles.textBig, { color: colorSelector[mode] }]}>
+        {status[mode]}
+      </Text>
     </ImageBackground>
   )
 })
 
-const shadows = { textShadowColor: 'rgba(0, 0, 0, 0.75)', textShadowOffset: { width: 5, height: 5 }, textShadowRadius: 10 }
+const shadows = {
+  textShadowColor: 'rgba(0, 0, 0, 0.75)',
+  textShadowOffset: { width: 5, height: 5 },
+  textShadowRadius: 10
+}
 
 const styles = StyleSheet.create({
   buttonBox: {

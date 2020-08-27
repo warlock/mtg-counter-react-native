@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, View, Dimensions, Text, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar
+} from 'react-native'
 import Counter from './components/Counter'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import dayjs from 'dayjs'
@@ -78,7 +86,11 @@ export default () => {
       <SafeAreaView style={styles.background}>
         <StatusBar backgroundColor="black" barStyle="light-content" />
         <View style={styles.inview}>
-          <Counter ref={playerCounter} invert={true} img={require('./assets/red.jpg')} />
+          <Counter
+            ref={playerCounter}
+            invert={true}
+            img={require('./assets/red.jpg')}
+          />
           <View style={[styles.buttons]}>
             <TouchableOpacity
               style={{
@@ -95,7 +107,15 @@ export default () => {
                 }
               }}
             >
-              {viewtimer ? <Text style={styles.textsmall}>{timer}</Text> : <MaterialCommunityIcons name="clock-outline" size={32} color="white" />}
+              {viewtimer ? (
+                <Text style={styles.textsmall}>{timer}</Text>
+              ) : (
+                <MaterialCommunityIcons
+                  name="clock-outline"
+                  size={32}
+                  color="white"
+                />
+              )}
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -115,7 +135,11 @@ export default () => {
               }}
               onPress={() => throwDice()}
             >
-              <MaterialCommunityIcons name={`dice-${dice.number}`} size={32} color={dice.color} />
+              <MaterialCommunityIcons
+                name={`dice-${dice.number}`}
+                size={32}
+                color={dice.color}
+              />
             </TouchableOpacity>
           </View>
           <Counter ref={playerCounter2} img={require('./assets/blue.jpg')} />
