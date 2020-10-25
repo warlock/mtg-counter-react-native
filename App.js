@@ -6,7 +6,8 @@ import {
   Text,
   Pressable,
   StatusBar,
-  ImageBackground
+  ImageBackground,
+  SafeAreaView
 } from 'react-native'
 import Counter from './components/Counter'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -85,7 +86,7 @@ export default () => {
     return (
       <ImageBackground source={require('./assets/background.jpg')} style={styles.background}>
         <StatusBar backgroundColor="black" barStyle="light-content" />
-        <View style={styles.inview}>
+        <SafeAreaView style={styles.inview}>
           <Counter ref={playerCounter} invert={true} />
           <View style={[styles.buttons]}>
             <Pressable
@@ -131,7 +132,7 @@ export default () => {
             </Pressable>
           </View>
           <Counter ref={playerCounter2} />
-        </View>
+        </SafeAreaView>
       </ImageBackground>
     )
 }
