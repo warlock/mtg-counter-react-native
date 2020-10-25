@@ -43,12 +43,7 @@ export default forwardRef(({ img, invert }, ref) => {
       ]}
     >
 
-            <ModeButton image={require('../assets/heart.png')} setmode={() => setMode('life')} />
-        <ModeButton image={require('../assets/poison.png')} setmode={() => setMode('poison')} />
-        <ModeButton
-          image={require('../assets/planeswalker.png')}
-          setmode={() => setMode('planeswalker')}
-        />
+   
   */
 
   return (
@@ -65,9 +60,7 @@ export default forwardRef(({ img, invert }, ref) => {
     >
       <Pressable
         style={styles.opacityr}
-        onPress={() => {
-          setStatus({ ...status, [mode]: status[mode] + 1 })
-        }}
+        onPress={() => setStatus({ ...status, [mode]: status[mode] + 1 })}
       >
         <AntDesign
           style={{
@@ -82,9 +75,7 @@ export default forwardRef(({ img, invert }, ref) => {
       </Pressable>
       <Pressable
         style={styles.opacityl}
-        onPress={() => {
-          setStatus({ ...status, [mode]: status[mode] - 1 })
-        }}
+        onPress={() => setStatus({ ...status, [mode]: status[mode] - 1 })}
       >
         <AntDesign
           style={{
@@ -124,8 +115,8 @@ const styles = StyleSheet.create({
   textBig: {
     position: 'absolute',
     zIndex: 0,
-    fontSize: width / 3,
-    ...shadows
+    fontSize: width / 3
+    //...shadows
   },
   opacityl: {
     position: 'absolute',
@@ -133,8 +124,8 @@ const styles = StyleSheet.create({
     height: '100%',
     zIndex: 1,
     left: 0,
-    justifyContent: 'center',
-    ...shadows
+    justifyContent: 'center'
+    //...shadows
   },
   opacityr: {
     position: 'absolute',
@@ -142,7 +133,7 @@ const styles = StyleSheet.create({
     height: '100%',
     zIndex: 1,
     right: 0,
-    justifyContent: 'center',
-    ...shadows
+    justifyContent: 'center'
+    //...shadows
   }
 })
