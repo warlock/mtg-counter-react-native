@@ -4,8 +4,7 @@ import {
   View,
   Dimensions,
   Text,
-  TouchableOpacity,
-  SafeAreaView,
+  Pressable,
   StatusBar,
   ImageBackground
 } from 'react-native'
@@ -89,7 +88,7 @@ export default () => {
         <View style={styles.inview}>
           <Counter ref={playerCounter} invert={true} />
           <View style={[styles.buttons]}>
-            <TouchableOpacity
+            <Pressable
               style={{
                 width: width / 3,
                 alignItems: 'center',
@@ -109,8 +108,8 @@ export default () => {
               ) : (
                 <MaterialCommunityIcons name="clock-outline" size={32} color="white" />
               )}
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               style={{
                 width: width / 3,
                 alignItems: 'center',
@@ -119,8 +118,8 @@ export default () => {
               onPress={() => resetGame()}
             >
               <MaterialCommunityIcons name="reload" size={32} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               style={{
                 width: width / 3,
                 alignItems: 'center',
@@ -129,7 +128,7 @@ export default () => {
               onPress={() => throwDice()}
             >
               <MaterialCommunityIcons name={`dice-${dice.number}`} size={32} color={dice.color} />
-            </TouchableOpacity>
+            </Pressable>
           </View>
           <Counter ref={playerCounter2} />
         </View>

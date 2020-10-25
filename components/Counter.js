@@ -93,11 +93,13 @@ export default forwardRef(({ img, invert }, ref) => {
   )
 })
 
+/*
 const shadows = {
   textShadowColor: 'rgba(0, 0, 0, 0.75)',
   textShadowOffset: { width: 5, height: 5 },
   textShadowRadius: 10
 }
+*/
 
 const styles = StyleSheet.create({
   buttonBox: {
