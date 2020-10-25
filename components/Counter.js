@@ -58,6 +58,14 @@ export default forwardRef(({ img, invert }, ref) => {
         }
       ]}
     >
+      <View style={[styles.buttonBox, { width }]}>
+        <ModeButton image={require('../assets/heart.png')} setmode={() => setMode('life')} />
+        <ModeButton image={require('../assets/poison.png')} setmode={() => setMode('poison')} />
+        <ModeButton
+          image={require('../assets/planeswalker.png')}
+          setmode={() => setMode('planeswalker')}
+        />
+      </View>
       <Pressable
         style={styles.opacityr}
         onPress={() => setStatus({ ...status, [mode]: status[mode] + 1 })}
@@ -109,7 +117,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 3,
     left: 0,
-    bottom: 10,
+    bottom: 50,
     width: 60,
     height: 60,
     padding: 10
