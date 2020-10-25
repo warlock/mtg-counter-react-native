@@ -6,7 +6,8 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
-  StatusBar
+  StatusBar,
+  ImageBackground
 } from 'react-native'
 import Counter from './components/Counter'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -83,14 +84,10 @@ export default () => {
     return null
   } else
     return (
-      <SafeAreaView style={styles.background}>
+      <ImageBackground source={require('./assets/background.jpg')} style={styles.background}>
         <StatusBar backgroundColor="black" barStyle="light-content" />
         <View style={styles.inview}>
-          <Counter
-            ref={playerCounter}
-            invert={true}
-            img={require('./assets/red.jpg')}
-          />
+          <Counter ref={playerCounter} invert={true} />
           <View style={[styles.buttons]}>
             <TouchableOpacity
               style={{
@@ -110,11 +107,7 @@ export default () => {
               {viewtimer ? (
                 <Text style={styles.textsmall}>{timer}</Text>
               ) : (
-                <MaterialCommunityIcons
-                  name="clock-outline"
-                  size={32}
-                  color="white"
-                />
+                <MaterialCommunityIcons name="clock-outline" size={32} color="white" />
               )}
             </TouchableOpacity>
             <TouchableOpacity
@@ -135,16 +128,12 @@ export default () => {
               }}
               onPress={() => throwDice()}
             >
-              <MaterialCommunityIcons
-                name={`dice-${dice.number}`}
-                size={32}
-                color={dice.color}
-              />
+              <MaterialCommunityIcons name={`dice-${dice.number}`} size={32} color={dice.color} />
             </TouchableOpacity>
           </View>
-          <Counter ref={playerCounter2} img={require('./assets/blue.jpg')} />
+          <Counter ref={playerCounter2} />
         </View>
-      </SafeAreaView>
+      </ImageBackground>
     )
 }
 

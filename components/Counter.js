@@ -1,12 +1,5 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react'
-import {
-  Dimensions,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ImageBackground,
-  View
-} from 'react-native'
+import { Dimensions, Text, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import ModeButton from './ModeButton'
 const { width } = Dimensions.get('screen')
@@ -35,8 +28,9 @@ export default forwardRef(({ img, invert }, ref) => {
     planeswalker: 'blue'
   }
 
-  return (
-    <ImageBackground
+  /*
+  
+      <ImageBackground
       source={img}
       style={[
         {
@@ -48,15 +42,13 @@ export default forwardRef(({ img, invert }, ref) => {
         }
       ]}
     >
+  */
+
+  return (
+    <View>
       <View style={[styles.buttonBox, { width }]}>
-        <ModeButton
-          image={require('../assets/heart.png')}
-          setmode={() => setMode('life')}
-        />
-        <ModeButton
-          image={require('../assets/poison.png')}
-          setmode={() => setMode('poison')}
-        />
+        <ModeButton image={require('../assets/heart.png')} setmode={() => setMode('life')} />
+        <ModeButton image={require('../assets/poison.png')} setmode={() => setMode('poison')} />
         <ModeButton
           image={require('../assets/planeswalker.png')}
           setmode={() => setMode('planeswalker')}
@@ -96,10 +88,8 @@ export default forwardRef(({ img, invert }, ref) => {
           color="white"
         />
       </TouchableOpacity>
-      <Text style={[styles.textBig, { color: colorSelector[mode] }]}>
-        {status[mode]}
-      </Text>
-    </ImageBackground>
+      <Text style={[styles.textBig, { color: colorSelector[mode] }]}>{status[mode]}</Text>
+    </View>
   )
 })
 
