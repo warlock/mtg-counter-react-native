@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import Counter from './components/Counter'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useColorScheme } from 'react-native-appearance'
 import dayjs from 'dayjs'
 import { useKeepAwake } from 'expo-keep-awake'
 import useCachedResources from './hooks/useCachedResources'
@@ -29,6 +30,7 @@ export default () => {
   const playerCounter = useRef()
   const playerCounter2 = useRef()
   const isLoadingComplete = useCachedResources()
+  let colorScheme = useColorScheme()
 
   useEffect(() => {
     let interval = null
@@ -84,7 +86,14 @@ export default () => {
     return null
   } else
     return (
-      <ImageBackground source={require('./assets/background.jpg')} style={styles.background}>
+      <ImageBackground
+        source={
+          colorScheme === 'dark'
+            ? require(`./assets/background-dark.jpg`)
+            : require(`./assets/background-light.jpg`)
+        }
+        style={styles.background}
+      >
         <StatusBar backgroundColor="black" barStyle="light-content" />
         <SafeAreaView style={styles.inview}>
           <Counter ref={playerCounter} invert={true} />

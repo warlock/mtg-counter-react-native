@@ -24,8 +24,8 @@ export default forwardRef(({ img, invert }, ref) => {
 
   const colorSelector = {
     life: 'white',
-    poison: 'magenta',
-    planeswalker: 'blue'
+    poison: '#FFAEE0',
+    planeswalker: '#EDBB3A'
   }
 
   /*
