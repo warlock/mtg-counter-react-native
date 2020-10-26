@@ -4,12 +4,14 @@ import {
   View,
   Dimensions,
   Text,
-  TouchableOpacity,
-  SafeAreaView,
-  StatusBar
+  Pressable,
+  StatusBar,
+  ImageBackground,
+  SafeAreaView
 } from 'react-native'
 import Counter from './components/Counter'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useColorScheme } from 'react-native-appearance'
 import dayjs from 'dayjs'
 import { useKeepAwake } from 'expo-keep-awake'
 import useCachedResources from './hooks/useCachedResources'
@@ -28,6 +30,7 @@ export default () => {
   const playerCounter = useRef()
   const playerCounter2 = useRef()
   const isLoadingComplete = useCachedResources()
+  let colorScheme = useColorScheme()
 
   useEffect(() => {
     let interval = null
@@ -83,16 +86,19 @@ export default () => {
     return null
   } else
     return (
-      <SafeAreaView style={styles.background}>
+      <ImageBackground
+        source={
+          colorScheme === 'dark'
+            ? require(`./assets/background-dark.jpg`)
+            : require(`./assets/background-light.jpg`)
+        }
+        style={styles.background}
+      >
         <StatusBar backgroundColor="black" barStyle="light-content" />
-        <View style={styles.inview}>
-          <Counter
-            ref={playerCounter}
-            invert={true}
-            img={require('./assets/red.jpg')}
-          />
+        <SafeAreaView style={styles.inview}>
+          <Counter ref={playerCounter} invert={true} />
           <View style={[styles.buttons]}>
-            <TouchableOpacity
+            <Pressable
               style={{
                 width: width / 3,
                 alignItems: 'center',
@@ -110,14 +116,10 @@ export default () => {
               {viewtimer ? (
                 <Text style={styles.textsmall}>{timer}</Text>
               ) : (
-                <MaterialCommunityIcons
-                  name="clock-outline"
-                  size={32}
-                  color="white"
-                />
+                <MaterialCommunityIcons name="clock-outline" size={32} color="white" />
               )}
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               style={{
                 width: width / 3,
                 alignItems: 'center',
@@ -126,8 +128,8 @@ export default () => {
               onPress={() => resetGame()}
             >
               <MaterialCommunityIcons name="reload" size={32} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               style={{
                 width: width / 3,
                 alignItems: 'center',
@@ -135,16 +137,12 @@ export default () => {
               }}
               onPress={() => throwDice()}
             >
-              <MaterialCommunityIcons
-                name={`dice-${dice.number}`}
-                size={32}
-                color={dice.color}
-              />
-            </TouchableOpacity>
+              <MaterialCommunityIcons name={`dice-${dice.number}`} size={32} color={dice.color} />
+            </Pressable>
           </View>
-          <Counter ref={playerCounter2} img={require('./assets/blue.jpg')} />
-        </View>
-      </SafeAreaView>
+          <Counter ref={playerCounter2} />
+        </SafeAreaView>
+      </ImageBackground>
     )
 }
 

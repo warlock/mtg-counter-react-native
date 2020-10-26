@@ -1,10 +1,10 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Pressable, Image } from 'react-native'
 
 export default ({ image, setmode }) => (
-  <TouchableOpacity onPress={setmode}>
+  <Pressable onPress={setmode}>
     <Image source={image} />
-  </TouchableOpacity>
+  </Pressable>
 )
 
 const styles = StyleSheet.create({
